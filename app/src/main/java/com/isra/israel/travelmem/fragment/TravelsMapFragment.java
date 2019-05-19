@@ -1,4 +1,4 @@
-package com.isra.israel.travelmem;
+package com.isra.israel.travelmem.fragment;
 
 
 import android.os.Bundle;
@@ -10,18 +10,19 @@ import android.view.ViewGroup;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.isra.israel.travelmem.R;
 
-public class RouteEditorMapFragment extends Fragment {
+public class TravelsMapFragment extends Fragment {
 
     private View fragmentView;
     private GoogleMap googleMap;
 
-    public RouteEditorMapFragment() {
+    public TravelsMapFragment() {
         // Required empty public constructor
     }
 
-    public static RouteEditorMapFragment newInstance() {
-        RouteEditorMapFragment fragment = new RouteEditorMapFragment();
+    public static TravelsMapFragment newInstance() {
+        TravelsMapFragment fragment = new TravelsMapFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -40,11 +41,11 @@ public class RouteEditorMapFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         fragmentView = inflater.inflate(R.layout.fragment_travels_map, container, false);
-        SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.fragment_route_editor_map_google_map);
+        SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.fragment_travels_map_google_map);
         supportMapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
-                RouteEditorMapFragment.this.googleMap = googleMap;
+                TravelsMapFragment.this.googleMap = googleMap;
             }
         });
 
