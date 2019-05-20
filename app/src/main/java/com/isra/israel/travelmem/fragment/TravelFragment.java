@@ -27,7 +27,7 @@ public class TravelFragment extends Fragment {
     public static TravelFragment newInstance(Travel travel) {
         TravelFragment fragment = new TravelFragment();
         Bundle args = new Bundle();
-        args.putSerializable(ARG_TRAVEL, travel);
+        args.putParcelable(ARG_TRAVEL, travel);
         fragment.setArguments(args);
         return fragment;
     }
@@ -36,7 +36,7 @@ public class TravelFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            travel = (Travel) getArguments().getSerializable(ARG_TRAVEL);
+            travel = getArguments().getParcelable(ARG_TRAVEL);
         }
     }
 

@@ -29,7 +29,7 @@ public class RouteEditorFragment extends Fragment {
     public static RouteEditorFragment newInstance(Route route) {
         RouteEditorFragment fragment = new RouteEditorFragment();
         Bundle args = new Bundle();
-        args.putSerializable(ARG_ROUTE, route);
+        args.putParcelable(ARG_ROUTE, route);
         fragment.setArguments(args);
         return fragment;
     }
@@ -38,7 +38,7 @@ public class RouteEditorFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            route = (Route)getArguments().getSerializable(ARG_ROUTE);
+            route = getArguments().getParcelable(ARG_ROUTE);
         }
     }
 
