@@ -1,5 +1,8 @@
 package com.isra.israel.travelmem.model.directions;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -12,7 +15,7 @@ import com.isra.israel.travelmem.gson.TravelMemGson;
 
 import java.lang.reflect.Type;
 
-public class Point {
+public class Point implements Parcelable {
 
     @SerializedName("name")
     @Expose
@@ -24,6 +27,23 @@ public class Point {
 
     public Point() {
     }
+
+    protected Point(Parcel in) {
+        name = in.readString();
+        latLng = in.readParcelable(LatLng.class.getClassLoader());
+    }
+
+    public static final Creator<Point> CREATOR = new Creator<Point>() {
+        @Override
+        public Point createFromParcel(Parcel in) {
+            return new Point(in);
+        }
+
+        @Override
+        public Point[] newArray(int size) {
+            return new Point[size];
+        }
+    };
 
     public String getName() {
         return name;
@@ -39,6 +59,17 @@ public class Point {
 
     public void setLatLng(LatLng latLng) {
         this.latLng = latLng;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeParcelable(latLng, flags);
     }
 
     public static class RetrofitPointDeserializer implements JsonDeserializer<Point> {

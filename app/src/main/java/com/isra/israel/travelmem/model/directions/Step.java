@@ -1,9 +1,12 @@
 package com.isra.israel.travelmem.model.directions;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Step {
+public class Step implements Parcelable {
 
     @SerializedName("html_instructions")
     @Expose
@@ -32,6 +35,28 @@ public class Step {
     @SerializedName("polyline")
     @Expose
     private EncodedPolyline polyline;
+
+    protected Step(Parcel in) {
+        htmlInstructions = in.readString();
+        distance = in.readParcelable(TextValue.class.getClassLoader());
+        duration = in.readParcelable(TextValue.class.getClassLoader());
+        start = in.readParcelable(Point.class.getClassLoader());
+        end = in.readParcelable(Point.class.getClassLoader());
+        travelMode = in.readString();
+        polyline = in.readParcelable(EncodedPolyline.class.getClassLoader());
+    }
+
+    public static final Creator<Step> CREATOR = new Creator<Step>() {
+        @Override
+        public Step createFromParcel(Parcel in) {
+            return new Step(in);
+        }
+
+        @Override
+        public Step[] newArray(int size) {
+            return new Step[size];
+        }
+    };
 
     public String getHtmlInstructions() {
         return htmlInstructions;
@@ -87,5 +112,21 @@ public class Step {
 
     public void setPolyline(EncodedPolyline polyline) {
         this.polyline = polyline;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(htmlInstructions);
+        dest.writeParcelable(distance, flags);
+        dest.writeParcelable(duration, flags);
+        dest.writeParcelable(start, flags);
+        dest.writeParcelable(end, flags);
+        dest.writeString(travelMode);
+        dest.writeParcelable(polyline, flags);
     }
 }

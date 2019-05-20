@@ -1,7 +1,6 @@
 package com.isra.israel.travelmem.fragment;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,6 +10,7 @@ import android.widget.TextView;
 
 import com.isra.israel.travelmem.R;
 import com.isra.israel.travelmem.model.Travel;
+import com.isra.israel.travelmem.model.directions.Route;
 
 public class TravelFragment extends Fragment {
 
@@ -18,7 +18,7 @@ public class TravelFragment extends Fragment {
 
     private Travel travel;
 
-    private OnTravelEditedListener mOnTravelEditedListener;
+    private OnTravelEditedListener onTravelEditedListener;
 
     public TravelFragment() {
         // Required empty public constructor
@@ -57,6 +57,20 @@ public class TravelFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // TODO NOW open route editor
+
+                RouteEditorFragment routeEditorFragment = RouteEditorFragment.newInstance(travel.getRoute());
+                routeEditorFragment.setOnRouteEditedListener(new RouteEditorFragment.OnRouteEditedListener() {
+                    @Override
+                    public void onRouteEdited(Route route) {
+                        travel.setRoute(route);
+                        onTravelEditedListener.onTravelEdited(travel);
+                    }
+                });
+
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .add(R.id.f_travel_c_root, routeEditorFragment)
+                        .addToBackStack(null)
+                        .commit();
             }
         });
 
@@ -67,7 +81,7 @@ public class TravelFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof OnTravelEditedListener) {
-            mOnTravelEditedListener = (OnTravelEditedListener) context;
+            onTravelEditedListener = (OnTravelEditedListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnTravelEditedListener");
@@ -77,7 +91,7 @@ public class TravelFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mOnTravelEditedListener = null;
+        onTravelEditedListener = null;
     }
 
     public interface OnTravelEditedListener {
