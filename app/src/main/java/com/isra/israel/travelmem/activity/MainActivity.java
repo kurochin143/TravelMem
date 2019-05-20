@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import com.isra.israel.travelmem.R;
 
+// TODO LOW a map where the user can just create Route and save it as a Travel
 public class MainActivity extends AppCompatActivity {
 
     @Override

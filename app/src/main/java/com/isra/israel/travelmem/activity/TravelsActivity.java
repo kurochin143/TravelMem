@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import com.google.android.libraries.places.api.Places;
 import com.isra.israel.travelmem.R;
 import com.isra.israel.travelmem.adapter.TravelsAdapter;
 import com.isra.israel.travelmem.api.TravelMemAPIDAO;
@@ -30,6 +31,8 @@ public class TravelsActivity extends AppCompatActivity implements TravelFragment
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_travels);
+
+        Places.initialize(getApplicationContext(), getString(R.string.google_maps_api_key));
 
         // setup recycler view
         RecyclerView recyclerView = findViewById(R.id.a_travels_r_travels);
