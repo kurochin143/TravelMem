@@ -5,9 +5,11 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.isra.israel.travelmem.model.directions.Route;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Travel {
+// TODO MEDIUM parcelable
+public class Travel implements Serializable {
 
     @SerializedName("id")
     @Expose

@@ -4,11 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.TravelsActivity">
+    tools:context=".activity.TravelsActivity"
+    android:id="@+id/a_travels_c_root">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/a_travels_r_travels"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        tools:listitem="@layout/item_travel"/>
 
 </android.support.constraint.ConstraintLayout>

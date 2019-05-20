@@ -4,12 +4,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Pair;
 
 import com.isra.israel.travelmem.R;
 import com.isra.israel.travelmem.adapter.TravelsAdapter;
 import com.isra.israel.travelmem.api.TravelMemAPIDAO;
 import com.isra.israel.travelmem.dao.FirebaseSessionSPDAO;
+import com.isra.israel.travelmem.fragment.TravelFragment;
 import com.isra.israel.travelmem.model.Travel;
 
 import java.util.ArrayList;
@@ -20,10 +20,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class TravelsActivity extends AppCompatActivity {
+public class TravelsActivity extends AppCompatActivity implements TravelFragment.OnTravelEditedListener {
 
     private TravelsAdapter travelsAdapter;
     private Call<HashMap<String, Travel>> getTravelsCall;
+    private int openedTravelPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +37,17 @@ public class TravelsActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         travelsAdapter = new TravelsAdapter();
         recyclerView.setAdapter(travelsAdapter);
+
+        travelsAdapter.setOnTravelClickedListener(new TravelsAdapter.OnTravelClickedListener() {
+            @Override
+            public void onTravelClicked(Travel travel, int position) {
+                openedTravelPosition = position;
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.a_travels_c_root, TravelFragment.newInstance(travel))
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
 
         requestTravels();
 
@@ -87,5 +99,10 @@ public class TravelsActivity extends AppCompatActivity {
 
             travelsAdapter.setTravels(travels);
         }
+    }
+
+    @Override
+    public void onTravelEdited(Travel travel) {
+        travelsAdapter.setTravelAt(travel, openedTravelPosition);
     }
 }
