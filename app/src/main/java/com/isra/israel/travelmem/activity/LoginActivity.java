@@ -1,5 +1,6 @@
 package com.isra.israel.travelmem.activity;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,7 +15,16 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GetTokenResult;
 import com.isra.israel.travelmem.R;
+import com.isra.israel.travelmem.api.TravelMemAPIDAO;
+import com.isra.israel.travelmem.dao.FirebaseSessionSPDAO;
 import com.isra.israel.travelmem.fragment.RegisterFragment;
+import com.isra.israel.travelmem.model.Travel;
+
+import java.util.HashMap;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -47,13 +57,39 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        firebaseAuth.addIdTokenListener(new FirebaseAuth.IdTokenListener() {
+        firebaseAuth.signInWithEmailAndPassword("test_email@testing.com", "test_password").addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
-            public void onIdTokenChanged(@NonNull FirebaseAuth firebaseAuth) {
-                // TODO save new token
-                float x =0;
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                onRequestSignInComplete(task);
             }
         });
+
+//        firebaseAuth.addIdTokenListener(new FirebaseAuth.IdTokenListener() {
+//            @Override
+//            public void onIdTokenChanged(@NonNull final FirebaseAuth firebaseAuth) {
+//                final FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+//                if (firebaseUser != null) {
+//                    firebaseUser.getIdToken(true).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<GetTokenResult> task) {
+//                            if (task.isSuccessful()) {
+//                                GetTokenResult getTokenResult = task.getResult();
+//                                if (getTokenResult != null) {
+//                                    String token = getTokenResult.getToken();
+//                                    // save token
+//                                    FirebaseSessionSPDAO.setUid(LoginActivity.this, firebaseUser.getUid());
+//                                    FirebaseSessionSPDAO.setIdToken(LoginActivity.this, token);
+//
+//                                    Intent intent = new Intent(LoginActivity.this, TravelsActivity.class);
+//                                    startActivity(intent);
+//                                    finish();
+//                                }
+//                            }
+//                        }
+//                    });
+//                }
+//            }
+//        });
     }
 
     public void signInWithEmailAndPassword() {
@@ -84,9 +120,13 @@ public class LoginActivity extends AppCompatActivity {
                             GetTokenResult getTokenResult = task.getResult();
                             if (getTokenResult != null) {
                                 String token = getTokenResult.getToken();
-                                // TODO save token to sp
+                                // save token
+                                FirebaseSessionSPDAO.setUid(LoginActivity.this, firebaseUser.getUid());
+                                FirebaseSessionSPDAO.setIdToken(LoginActivity.this, token);
 
-                                // TODO open TravelsMapActivity
+                                Intent intent = new Intent(LoginActivity.this, TravelsActivity.class);
+                                startActivity(intent);
+                                finish();
                             }
                         } else {
                             Toast toast = Toast.makeText(LoginActivity.this, "Sign in failed", Toast.LENGTH_LONG);

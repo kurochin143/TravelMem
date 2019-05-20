@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/i_travel_t_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Travel Name"/>
+
+        <TextView
+            android:id="@+id/i_travel_t_start_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Start Date"/>
+
+        <TextView
+            android:id="@+id/i_travel_t_end_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="End Date"/>
+
+    </LinearLayout>
+
+
+
+</android.support.constraint.ConstraintLayout>
