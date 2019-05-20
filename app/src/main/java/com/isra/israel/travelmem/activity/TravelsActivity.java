@@ -90,6 +90,8 @@ public class TravelsActivity extends AppCompatActivity implements TravelFragment
             return;
         }
 
+        getTravelsCall = null;
+
         if (response != null && response.isSuccessful()) {
             HashMap<String, Travel> body = response.body();
 

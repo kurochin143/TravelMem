@@ -14,6 +14,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
@@ -39,6 +40,7 @@ public class RouteEditorFragment extends Fragment {
 
     private ArrayList<Route> routes;
     private Route route;
+    private ArrayList<Polyline> polylines = new ArrayList<>();
     private GoogleMap googleMap;
     private String origin;
     private String destination;
@@ -123,25 +125,27 @@ public class RouteEditorFragment extends Fragment {
             return;
         }
 
-        getDirectionCall = GoogleDirectionsAPIDAO.apiService.getDirection(getString(R.string.google_maps_api_key), origin, destination);
+        getDirectionCall = GoogleDirectionsAPIDAO.apiService.getDirectionByName(getString(R.string.google_maps_api_key), origin, destination);
         getDirectionCall.enqueue(new Callback<GoogleDirectionsResult>() {
             @Override
             public void onResponse(Call<GoogleDirectionsResult> call, Response<GoogleDirectionsResult> response) {
-                onGetDirectionCallFinished(response);
+                onGetDirectionByNameCallFinished(response);
             }
 
             @Override
             public void onFailure(Call<GoogleDirectionsResult> call, Throwable t) {
-                onGetDirectionCallFinished(null);
+                onGetDirectionByNameCallFinished(null);
 
             }
         });
     }
 
-    private void onGetDirectionCallFinished(Response<GoogleDirectionsResult> response) {
+    private void onGetDirectionByNameCallFinished(Response<GoogleDirectionsResult> response) {
         if (getDirectionCall.isCanceled()) {
             return;
         }
+
+        getDirectionCall = null;
 
         if (response != null && response.isSuccessful()) {
             GoogleDirectionsResult body = response.body();
@@ -157,6 +161,11 @@ public class RouteEditorFragment extends Fragment {
         }
 
         this.route = routes.get(0);
+
+        // clear previous polylines
+        for (Polyline polyline : polylines) {
+            polyline.remove();
+        }
 
         // TODO MEDIUM how to query for multiple routes
         // TODO MEDIUM route picker
@@ -179,12 +188,14 @@ public class RouteEditorFragment extends Fragment {
         }
 
         for (PolylineOptions polylineOptions : polylineOptionsList) {
-            googleMap.addPolyline(polylineOptions);
+            polylines.add(googleMap.addPolyline(polylineOptions));
         }
 
         for (CircleOptions circleOptions : circleOptionsList) {
             googleMap.addCircle(circleOptions);
         }
+
+        onRouteEditedListener.onRouteEdited(route);
     }
 
     public void setOnRouteEditedListener(OnRouteEditedListener onRouteEditedListener) {
