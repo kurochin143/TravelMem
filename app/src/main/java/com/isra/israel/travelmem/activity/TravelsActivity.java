@@ -109,5 +109,7 @@ public class TravelsActivity extends AppCompatActivity implements TravelFragment
     @Override
     public void onTravelEdited(Travel travel) {
         travelsAdapter.setTravelAt(travel, openedTravelPosition);
+
+        
     }
 }
