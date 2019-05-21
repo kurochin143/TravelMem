@@ -12,6 +12,7 @@ import android.widget.ImageView;
 
 import com.isra.israel.travelmem.R;
 import com.isra.israel.travelmem.model.TravelVideo;
+import com.isra.israel.travelmem.static_helpers.VideoStaticHelper;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -27,19 +28,14 @@ public class TravelVideosAdapter extends RecyclerView.Adapter<TravelVideosAdapte
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         final TravelVideo travelVideo = travelVideos.get(position);
 
         if (travelVideo.getUriStr() == null) {
             holder.imageView.setImageURI(null);
         } else {
-            MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
-            mediaMetadataRetriever.setDataSource(holder.itemView.getContext(), travelVideo.getUri());
-            String durationStr = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
-            long duration = Long.parseLong(durationStr);
-            long half = duration / 2;
-            // TODO VERY LOW get scaled frame
-            Bitmap frameAtHalf = mediaMetadataRetriever.getFrameAtTime(half * 1000);
+            // TODO MEDIUM do this async because it takes some time
+            Bitmap frameAtHalf = VideoStaticHelper.getFrameAtHalf(holder.itemView.getContext(), travelVideo.getUri());
 
             holder.imageView.setImageBitmap(frameAtHalf);
         }
@@ -47,7 +43,7 @@ public class TravelVideosAdapter extends RecyclerView.Adapter<TravelVideosAdapte
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onTravelVideoClickListener.onTravelVideoClick(travelVideo, position);
+                onTravelVideoClickListener.onTravelVideoClick(travelVideo, holder.getAdapterPosition());
             }
         });
     }
@@ -73,7 +69,7 @@ public class TravelVideosAdapter extends RecyclerView.Adapter<TravelVideosAdapte
 
     public void removeTravelVideo(int position) {
         travelVideos.remove(position);
-        notifyItemChanged(position);
+        notifyItemRemoved(position);
     }
 
     public void setTravelVideoAt(TravelVideo travelVideo, int position) {

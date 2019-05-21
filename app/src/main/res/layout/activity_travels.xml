@@ -14,8 +14,18 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/a_travels_r_travels"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:listitem="@layout/item_travel"/>
+            android:layout_height="0dp"
+            tools:listitem="@layout/item_travel"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/a_travels_b_add_travel"/>
+
+        <Button
+            android:id="@+id/a_travels_b_add_travel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add Travel"
+            app:layout_constraintTop_toBottomOf="@id/a_travels_r_travels"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
     </android.support.constraint.ConstraintLayout>
 

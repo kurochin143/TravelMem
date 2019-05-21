@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.google.android.libraries.places.api.Places;
 import com.isra.israel.travelmem.R;
@@ -43,14 +44,25 @@ public class TravelsActivity extends AppCompatActivity implements TravelFragment
         travelsAdapter = new TravelsAdapter();
         recyclerView.setAdapter(travelsAdapter);
 
+        // adapter
         travelsAdapter.setOnTravelClickListener(new TravelsAdapter.OnTravelClickListener() {
             @Override
             public void onTravelClick(Travel travel, int position) {
                 openedTravelPosition = position;
+
+                // open travel fragment
                 getSupportFragmentManager().beginTransaction()
                         .add(R.id.a_travels_fl_root, TravelFragment.newInstance(travel))
                         .addToBackStack(null)
                         .commit();
+            }
+        });
+
+        // add travel button
+        findViewById(R.id.a_travels_b_add_travel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                
             }
         });
 

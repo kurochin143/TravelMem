@@ -15,10 +15,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <service
             android:name=".service.SyncService"
             android:enabled="true"
-            android:exported="false"></service>
+            android:exported="false" />
 
         <activity android:name=".activity.TestContextActivity" />
         <activity android:name=".activity.LoginActivity" />

@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragment.TravelVideoFragment"
-    android:background="#FFFFFF">
+    android:background="#FFFFFF"
+    android:clickable="true">
 
     <VideoView
         android:id="@+id/f_travel_video_vv_video"
@@ -25,6 +26,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
+            <Button
+                android:id="@+id/f_travel_video_b_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Delete"/>
 
             <TextView
                 android:id="@+id/f_travel_video_t_location"

@@ -17,7 +17,10 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toTopOf="@+id/f_travel_videos_b_add_video"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:listitem="@layout/item_travel_video"
+            app:layoutManager="android.support.v7.widget.GridLayoutManager"
+            app:spanCount="3"/>
 
         <Button
             android:id="@+id/f_travel_videos_b_add_video"

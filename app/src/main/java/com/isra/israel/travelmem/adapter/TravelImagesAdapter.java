@@ -24,7 +24,7 @@ public class TravelImagesAdapter extends RecyclerView.Adapter<TravelImagesAdapte
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         final TravelImage travelImage = travelImages.get(position);
 
         if (travelImage.getUriStr() == null) {
@@ -36,7 +36,7 @@ public class TravelImagesAdapter extends RecyclerView.Adapter<TravelImagesAdapte
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onTravelImageClickListener.onTravelImageClick(travelImage, position);
+                onTravelImageClickListener.onTravelImageClick(travelImage, holder.getAdapterPosition());
             }
         });
     }
@@ -62,7 +62,7 @@ public class TravelImagesAdapter extends RecyclerView.Adapter<TravelImagesAdapte
 
     public void removeTravelImage(int position) {
         travelImages.remove(position);
-        notifyItemChanged(position);
+        notifyItemRemoved(position);
     }
 
     public void setTravelImageAt(TravelImage travelImage, int position) {

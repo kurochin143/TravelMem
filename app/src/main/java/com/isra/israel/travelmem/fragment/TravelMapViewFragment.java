@@ -19,15 +19,19 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
+import com.google.maps.android.ui.IconGenerator;
 import com.isra.israel.travelmem.R;
 import com.isra.israel.travelmem.model.Travel;
 import com.isra.israel.travelmem.model.TravelImage;
+import com.isra.israel.travelmem.model.TravelVideo;
 import com.isra.israel.travelmem.model.directions.Leg;
 import com.isra.israel.travelmem.model.directions.Route;
 import com.isra.israel.travelmem.model.directions.Step;
+import com.isra.israel.travelmem.static_helpers.VideoStaticHelper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -40,6 +44,10 @@ public class TravelMapViewFragment extends Fragment {
     private Travel travel;
 
     private GoogleMap googleMap;
+
+    private OnTravelEditListener onTravelEditListener;
+
+    private ArrayList<Marker> markers = new ArrayList<>();
 
     public TravelMapViewFragment() {
         // Required empty public constructor
@@ -75,14 +83,17 @@ public class TravelMapViewFragment extends Fragment {
 
                 Route route = travel.getRoute();
 
+                // TODO MEDIUM do this async
+
                 // draw route
                 if (route != null) {
-                    googleMap.setLatLngBoundsForCameraTarget(LatLngBounds.builder()
-                            .include(route.getBounds().getNorthEast())
-                            .include(route.getBounds().getSouthWest())
-                            .build());
+                    // TODO MEDIUM lock and move/zoom camera to route
+//                    googleMap.setLatLngBoundsForCameraTarget(LatLngBounds.builder()
+//                            .include(route.getBounds().getNorthEast())
+//                            .include(route.getBounds().getSouthWest())
+//                            .build());
 
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(route.getBounds().getNorthEast()));
+                    //googleMap.moveCamera(CameraUpdateFactory.newLatLng(route.getBounds().getNorthEast()));
 
                     ArrayList<PolylineOptions> polylineOptionsList = new ArrayList<>();
                     ArrayList<CircleOptions> circleOptionsList = new ArrayList<>();
@@ -109,7 +120,9 @@ public class TravelMapViewFragment extends Fragment {
                     }
                 }
 
-                // add media marker
+                // TODO HIGH remove non-existent file
+
+                // add travel image marker
                 if (travel.getImages() != null) {
                     for (TravelImage travelImage : travel.getImages()) {
                         if (travelImage.getUriStr() != null && travelImage.getLocation() != null && travelImage.getLocation().getLatLng() != null) {
@@ -125,10 +138,83 @@ public class TravelMapViewFragment extends Fragment {
                         }
                     }
                 }
+
+                // add travel video marker
+                if (travel.getVideos() != null) {
+                    for (final TravelVideo travelVideo : travel.getVideos()) {
+                        if (travelVideo.getUriStr() != null && travelVideo.getLocation() != null && travelVideo.getLocation().getLatLng() != null) {
+                            Bitmap bitmap = VideoStaticHelper.getFrameAtHalf(getContext(), travelVideo.getUri());
+                            Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, 100, 100, false);
+                            final Marker marker = googleMap.addMarker(new MarkerOptions()
+                                    .icon(BitmapDescriptorFactory.fromBitmap(scaledBitmap))
+                                    .position(travelVideo.getLocation().getLatLng())
+                            );
+
+                            marker.setTag(travelVideo);
+
+                            markers.add(marker);
+                        }
+                    }
+                }
+
+                googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                    @Override
+                    public boolean onMarkerClick(Marker marker) {
+
+                        for (int i = 0; i < markers.size(); ++i) {
+                            final Marker myMarker = markers.get(i);
+                            if (myMarker.getId().equals(marker.getId())) {
+                                TravelVideo markerTravelVideo = (TravelVideo) myMarker.getTag();
+
+                                // find the travel video
+                                for (int j = 0; j < travel.getVideos().size(); ++j) {
+                                    TravelVideo arrTravelVideo = travel.getVideos().get(j);
+                                    if (arrTravelVideo == markerTravelVideo) {
+                                        final int openedTravelVideoPosition = j;
+
+                                        // open travel video fragment
+                                        TravelVideoFragment travelVideoFragment = TravelVideoFragment.newInstance(markerTravelVideo);
+                                        travelVideoFragment.setOnTravelVideoEditListener(new TravelVideoFragment.OnTravelVideoEditListener() {
+                                            @Override
+                                            public void onTravelVideoEdit(TravelVideo travelVideo) {
+                                                if (travelVideo == null) { // removed
+                                                    myMarker.remove();
+
+                                                    travel.getVideos().remove(openedTravelVideoPosition);
+                                                } else { // edited
+                                                    travel.getVideos().set(openedTravelVideoPosition, travelVideo);
+                                                }
+
+                                                onTravelEditListener.onTravelEdit(travel);
+                                            }
+                                        });
+                                        getActivity().getSupportFragmentManager().beginTransaction()
+                                                .add(R.id.f_travel_map_view_c_root, travelVideoFragment)
+                                                .commit();
+
+                                        break;
+                                    }
+                                }
+
+                                break;
+                            }
+                        }
+
+                        return true;
+                    }
+                });
             }
         });
 
         return view;
+    }
+
+    public void setOnTravelEditListener(OnTravelEditListener l) {
+        onTravelEditListener = l;
+    }
+
+    public interface OnTravelEditListener {
+        void onTravelEdit(Travel travel);
     }
 
 }

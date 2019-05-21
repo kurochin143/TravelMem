@@ -54,10 +54,18 @@ public class TravelFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_travel, container, false);
 
+        // map
         view.findViewById(R.id.f_travel_b_view_on_map).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 TravelMapViewFragment travelMapViewFragment = TravelMapViewFragment.newInstance(travel);
+                travelMapViewFragment.setOnTravelEditListener(new TravelMapViewFragment.OnTravelEditListener() {
+                    @Override
+                    public void onTravelEdit(Travel travel) {
+                        TravelFragment.this.travel = travel;
+                        onTravelEditListener.onTravelEdit(TravelFragment.this.travel);
+                    }
+                });
                 getActivity().getSupportFragmentManager().beginTransaction()
                         .add(R.id.f_travel_fl_root, travelMapViewFragment)
                         .addToBackStack(null)
@@ -65,6 +73,7 @@ public class TravelFragment extends Fragment {
             }
         });
 
+        // name
         final TextView nameTextView = view.findViewById(R.id.f_travel_t_name);
         nameTextView.setText(travel.getName());
         nameTextView.setOnClickListener(new View.OnClickListener() {
@@ -96,21 +105,27 @@ public class TravelFragment extends Fragment {
             }
         });
 
+        // start date
         TextView startDateTextView = view.findViewById(R.id.f_travel_t_start_date);
         startDateTextView.setText(travel.getStartDate());
 
+        // end date
         TextView endDateTextView = view.findViewById(R.id.f_travel_t_end_date);
         endDateTextView.setText(travel.getEndDate());
 
+        // origin
         final TextView originTextView = view.findViewById(R.id.f_travel_t_origin);
         if (travel.getOrigin() != null) {
             originTextView.setText(travel.getOrigin().getName());
         }
+
+        // destination
         final TextView destinationTextView = view.findViewById(R.id.f_travel_t_destination);
         if (travel.getDestination() != null) {
             destinationTextView.setText(travel.getDestination().getName());
         }
 
+        // route fragment
         view.findViewById(R.id.f_travel_b_route).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -136,6 +151,7 @@ public class TravelFragment extends Fragment {
             }
         });
 
+        // images fragment
         view.findViewById(R.id.f_travel_b_view_images).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -156,6 +172,7 @@ public class TravelFragment extends Fragment {
             }
         });
 
+        // videos fragment
         view.findViewById(R.id.f_travel_b_view_videos).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

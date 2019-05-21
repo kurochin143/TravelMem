@@ -32,6 +32,7 @@ import java.util.ArrayList;
 public class TravelVideosFragment extends Fragment {
     private static final String ARG_TRAVEL_VIDEOS = "travel_videos";
     private static final int RC_VIDEO = 0;
+    private static final int SPAN_COUNT = 2;
 
     private TravelVideosAdapter travelVideosAdapter;
     private int openedTravelVideoPosition;
@@ -81,12 +82,14 @@ public class TravelVideosFragment extends Fragment {
             onTravelVideosEditListener.onTravelVideosEditListener(travelVideos);
         }
 
+        // videos adapter
         travelVideosAdapter = new TravelVideosAdapter();
         travelVideosAdapter.setOnTravelVideoClickListener(new TravelVideosAdapter.OnTravelVideoClickListener() {
             @Override
             public void onTravelVideoClick(TravelVideo travelVideo, int position) {
                 openedTravelVideoPosition = position;
 
+                // open travel video fragment
                 TravelVideoFragment travelVideoFragment = TravelVideoFragment.newInstance(travelVideo);
                 travelVideoFragment.setOnTravelVideoEditListener(new TravelVideoFragment.OnTravelVideoEditListener() {
                     @Override
@@ -109,12 +112,14 @@ public class TravelVideosFragment extends Fragment {
         });
         travelVideosAdapter.setTravelVideos(travelVideos);
 
+        // videos recycler
         RecyclerView recyclerView = view.findViewById(R.id.f_travel_videos_r_videos);
         recyclerView.setHasFixedSize(true);
 
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 4));
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), SPAN_COUNT));
         recyclerView.setAdapter(travelVideosAdapter);
 
+        // add video button
         view.findViewById(R.id.f_travel_videos_b_add_video).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

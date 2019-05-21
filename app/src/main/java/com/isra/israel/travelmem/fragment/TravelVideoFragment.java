@@ -9,6 +9,7 @@ import android.widget.VideoView;
 
 import com.isra.israel.travelmem.R;
 import com.isra.israel.travelmem.model.TravelVideo;
+import com.isra.israel.travelmem.static_helpers.VideoStaticHelper;
 
 public class TravelVideoFragment extends Fragment {
     private static final String ARG_TRAVEL_VIDEO = "travel_video";
@@ -49,6 +50,18 @@ public class TravelVideoFragment extends Fragment {
             videoView.start();
         }
 
+        view.findViewById(R.id.f_travel_video_b_delete).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO delete actual file
+
+                onTravelVideoEditListener.onTravelVideoEdit(null);
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .remove(TravelVideoFragment.this)
+                        .commit();
+            }
+        });
+
         return view;
     }
 
@@ -59,4 +72,5 @@ public class TravelVideoFragment extends Fragment {
     public interface OnTravelVideoEditListener {
         void onTravelVideoEdit(TravelVideo travelVideo);
     }
+
 }
