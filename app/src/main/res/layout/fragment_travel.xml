@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     tools:context=".fragment.TravelFragment"
     android:background="#FFFFFF"
-    android:id="@+id/f_travel_c_root">
+    android:id="@+id/f_travel_c_root"
+    android:clickable="true">
 
     <LinearLayout
         android:layout_width="match_parent"

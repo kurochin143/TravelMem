@@ -6,7 +6,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragment.TravelImagesFragment"
     android:background="#FFFFFF"
-    android:id="@+id/f_travel_images_c_root">
+    android:id="@+id/f_travel_images_c_root"
+    android:clickable="true">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/f_travel_images_r_images"
