@@ -48,7 +48,7 @@ public class TravelsActivity extends AppCompatActivity implements TravelFragment
             public void onTravelClick(Travel travel, int position) {
                 openedTravelPosition = position;
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.a_travels_c_root, TravelFragment.newInstance(travel))
+                        .add(R.id.a_travels_fl_root, TravelFragment.newInstance(travel))
                         .addToBackStack(null)
                         .commit();
             }

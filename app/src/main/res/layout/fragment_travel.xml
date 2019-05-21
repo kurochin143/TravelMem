@@ -40,6 +40,26 @@
             android:layout_height="wrap_content"
             android:text="Edit Route"/>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Origin"
+            android:textSize="20sp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Destination"
+            android:textSize="20sp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="00/00/0000"
+            android:textSize="20sp"/>
+
+
+
         <Button
             android:id="@+id/f_travel_b_view_images"
             android:layout_width="wrap_content"

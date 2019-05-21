@@ -73,7 +73,7 @@ public class TravelImagesFragment extends Fragment {
                 });
 
                 getActivity().getSupportFragmentManager().beginTransaction()
-                        .add(R.id.f_travel_images_c_root, travelImageFragment)
+                        .add(R.id.f_travel_images_fl_root, travelImageFragment)
                         .addToBackStack(null)
                         .commit();
             }

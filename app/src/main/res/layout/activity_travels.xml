@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.TravelsActivity"
-    android:id="@+id/a_travels_c_root">
+    android:id="@+id/a_travels_fl_root">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/a_travels_r_travels"
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:listitem="@layout/item_travel"/>
+        android:layout_height="match_parent">
 
-</android.support.constraint.ConstraintLayout>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/a_travels_r_travels"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/item_travel"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+</FrameLayout>
