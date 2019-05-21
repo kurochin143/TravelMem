@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import com.isra.israel.travelmem.R;
 import com.isra.israel.travelmem.model.TravelVideo;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class TravelVideosAdapter extends RecyclerView.Adapter<TravelVideosAdapter.ViewHolder> {

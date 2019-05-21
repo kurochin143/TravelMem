@@ -2,18 +2,31 @@ package com.isra.israel.travelmem.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.isra.israel.travelmem.R;
 import com.isra.israel.travelmem.adapter.TravelVideosAdapter;
 import com.isra.israel.travelmem.model.TravelVideo;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 
 public class TravelVideosFragment extends Fragment {
@@ -51,6 +64,21 @@ public class TravelVideosFragment extends Fragment {
         ArrayList<TravelVideo> travelVideos = getArguments().getParcelableArrayList(ARG_TRAVEL_VIDEOS);
         if (travelVideos == null) {
             travelVideos = new ArrayList<>();
+        }
+
+        // check for non existing files
+        boolean somethingRemoved = false;
+        for (int i = travelVideos.size() - 1; i > -1; --i) {
+            TravelVideo travelVideo = travelVideos.get(i);
+
+            File file = new File(travelVideo.getUriStr());
+            if (!file.exists()) {
+                somethingRemoved = true;
+                travelVideos.remove(i);
+            }
+        }
+        if (somethingRemoved) {
+            onTravelVideosEditListener.onTravelVideosEditListener(travelVideos);
         }
 
         travelVideosAdapter = new TravelVideosAdapter();
@@ -106,13 +134,40 @@ public class TravelVideosFragment extends Fragment {
 
         if (requestCode == RC_VIDEO && resultCode == Activity.RESULT_OK && data.getData() != null) {
             TravelVideo travelVideo = new TravelVideo();
-            travelVideo.setUriStr(data.getData().toString());
+            // TODO VERY LOW unique file name generator or just check if file already exists and increment i
+            try {
+                InputStream inputStream = getContext().getContentResolver().openInputStream(data.getData());
 
-            travelVideosAdapter.addTravelVideo(travelVideo);
+                File uriFile = new File(data.getData().getPath());
+                String outputFileStr = getContext().getFilesDir().getPath() + "/" + uriFile.getName() + ".tv";
+                File outputFile = new File(outputFileStr);
 
-            onTravelVideosEditListener.onTravelVideosEditListener(travelVideosAdapter.getTravelVideos());
+                byte[] buffer = new byte[1024 * 1024];
+
+                FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
+
+                int read;
+                while ((read = inputStream.read(buffer)) != -1) {
+                    fileOutputStream.write(buffer, 0, read);
+                }
+
+                inputStream.close();
+                fileOutputStream.close();
+
+                travelVideo.setUriStr(outputFileStr);
+
+                travelVideosAdapter.addTravelVideo(travelVideo);
+
+                onTravelVideosEditListener.onTravelVideosEditListener(travelVideosAdapter.getTravelVideos());
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(getContext(), "Failed to load media", Toast.LENGTH_SHORT).show();
+            }
         }
     }
+
+
 
     public void setOnTravelVideosEditListener(OnTravelVideosEditListener l) {
         onTravelVideosEditListener = l;

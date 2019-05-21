@@ -72,16 +72,11 @@ public class Point implements Parcelable {
         dest.writeParcelable(latLng, flags);
     }
 
-    private static final Gson gson = new Gson();
-
     public static class RetrofitPointDeserializer implements JsonDeserializer<Point> {
-
-        private static int calls;
 
         @Override
         public Point deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             JsonObject pointJson = json.getAsJsonObject();
-            calls += 1;
 
             // when deserializing from TravelMem api
             boolean hasName = pointJson.has("name");
@@ -94,7 +89,7 @@ public class Point implements Parcelable {
                 if (hasLatLng) {
                     point.setLatLng(LatLngJson.fromJson(pointJson.get("latLng")));
                 }
-
+                // TODO ? Why does gson.fromJson(json, Point.class) doesn't stringify latLng
                 return point;
             }
 
