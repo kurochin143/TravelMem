@@ -14,6 +14,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
+// TODO NOW user dir
 public class TravelMemLocalCacheDAO {
 
     private static final String PATH_TRAVEL_MEM = "travel_mem";

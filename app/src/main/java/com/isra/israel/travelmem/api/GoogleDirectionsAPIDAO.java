@@ -35,7 +35,7 @@ public class GoogleDirectionsAPIDAO {
 
     public interface GoogleDirectionsInterface {
         @GET("json")
-        Call<GoogleDirectionsResult> getDirectionByName(@Query(value = "key") String apiKey, @Query(value = "origin") String origin, @Query(value = "destination") String destination);
+        Call<GoogleDirectionsResult> getDirection(@Query(value = "key") String apiKey, @Query(value = "origin") String origin, @Query(value = "destination") String destination);
 
     }
 }

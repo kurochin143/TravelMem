@@ -3,9 +3,9 @@ package com.isra.israel.travelmem.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.isra.israel.travelmem.model.directions.Point;
 import com.isra.israel.travelmem.model.directions.Route;
 
 import java.util.ArrayList;
@@ -30,11 +30,11 @@ public class Travel implements Parcelable {
 
     @SerializedName("origin")
     @Expose
-    private LatLng origin;
+    private Point origin;
 
     @SerializedName("destination")
     @Expose
-    private LatLng destination;
+    private Point destination;
 
     @SerializedName("route")
     @Expose
@@ -69,8 +69,8 @@ public class Travel implements Parcelable {
         name = in.readString();
         startDate = in.readString();
         endDate = in.readString();
-        origin = in.readParcelable(LatLng.class.getClassLoader());
-        destination = in.readParcelable(LatLng.class.getClassLoader());
+        origin = in.readParcelable(Point.class.getClassLoader());
+        destination = in.readParcelable(Point.class.getClassLoader());
         route = in.readParcelable(Route.class.getClassLoader());
         images = in.createTypedArrayList(TravelImage.CREATOR);
         videos = in.createTypedArrayList(TravelVideo.CREATOR);
@@ -123,19 +123,19 @@ public class Travel implements Parcelable {
         this.endDate = endDate;
     }
 
-    public LatLng getOrigin() {
+    public Point getOrigin() {
         return origin;
     }
 
-    public void setOrigin(LatLng origin) {
+    public void setOrigin(Point origin) {
         this.origin = origin;
     }
 
-    public LatLng getDestination() {
+    public Point getDestination() {
         return destination;
     }
 
-    public void setDestination(LatLng destination) {
+    public void setDestination(Point destination) {
         this.destination = destination;
     }
 

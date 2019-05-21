@@ -24,6 +24,7 @@ import com.isra.israel.travelmem.R;
 import com.isra.israel.travelmem.api.GoogleDirectionsAPIDAO;
 import com.isra.israel.travelmem.model.directions.GoogleDirectionsResult;
 import com.isra.israel.travelmem.model.directions.Leg;
+import com.isra.israel.travelmem.model.directions.Point;
 import com.isra.israel.travelmem.model.directions.Route;
 import com.isra.israel.travelmem.model.directions.Step;
 
@@ -42,8 +43,8 @@ public class RouteEditorFragment extends Fragment {
     private Route route;
     private ArrayList<Polyline> polylines = new ArrayList<>();
     private GoogleMap googleMap;
-    private String origin;
-    private String destination;
+    private Point origin = new Point();
+    private Point destination = new Point();
     private Call<GoogleDirectionsResult> getDirectionCall;
 
     private OnRouteEditListener onRouteEditListener;
@@ -78,15 +79,18 @@ public class RouteEditorFragment extends Fragment {
             @Override
             public void onMapReady(GoogleMap googleMap) {
                 RouteEditorFragment.this.googleMap = googleMap;
+
+                drawRoute(route);
             }
         });
 
         AutocompleteSupportFragment originAutocompleteSupportFragment = (AutocompleteSupportFragment) getChildFragmentManager().findFragmentById(R.id.f_route_editor_f_autocomplete_origin);
-        originAutocompleteSupportFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
+        originAutocompleteSupportFragment.setPlaceFields(Arrays.asList(Place.Field.NAME, Place.Field.LAT_LNG));
         originAutocompleteSupportFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(@NonNull Place place) {
-                origin = place.getName();
+                origin.setName(place.getName());
+                origin.setLatLng(place.getLatLng());
 
                 requestDirectionByName();
             }
@@ -98,11 +102,12 @@ public class RouteEditorFragment extends Fragment {
         });
 
         AutocompleteSupportFragment destinationAutocompleteSupportFragment = (AutocompleteSupportFragment) getChildFragmentManager().findFragmentById(R.id.f_route_editor_f_autocomplete_destination);
-        destinationAutocompleteSupportFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
+        destinationAutocompleteSupportFragment.setPlaceFields(Arrays.asList(Place.Field.NAME, Place.Field.LAT_LNG));
         destinationAutocompleteSupportFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(@NonNull Place place) {
-                destination = place.getName();
+                destination.setName(place.getName());
+                destination.setLatLng(place.getLatLng());
 
                 requestDirectionByName();
             }
@@ -121,26 +126,30 @@ public class RouteEditorFragment extends Fragment {
             return;
         }
 
-        if (origin == null || destination == null) {
+        if (origin.getLatLng() == null || destination.getLatLng() == null) {
             return;
         }
 
-        getDirectionCall = GoogleDirectionsAPIDAO.apiService.getDirectionByName(getString(R.string.google_maps_api_key), origin, destination);
+        getDirectionCall = GoogleDirectionsAPIDAO.apiService.getDirection(
+                getString(R.string.google_maps_api_key),
+                origin.getLatLng().latitude + "," + origin.getLatLng().longitude,
+                destination.getLatLng().latitude + "," + destination.getLatLng().longitude
+        );
         getDirectionCall.enqueue(new Callback<GoogleDirectionsResult>() {
             @Override
             public void onResponse(Call<GoogleDirectionsResult> call, Response<GoogleDirectionsResult> response) {
-                onGetDirectionByNameCallFinished(response);
+                onGetDirectionCallFinished(response);
             }
 
             @Override
             public void onFailure(Call<GoogleDirectionsResult> call, Throwable t) {
-                onGetDirectionByNameCallFinished(null);
+                onGetDirectionCallFinished(null);
 
             }
         });
     }
 
-    private void onGetDirectionByNameCallFinished(Response<GoogleDirectionsResult> response) {
+    private void onGetDirectionCallFinished(Response<GoogleDirectionsResult> response) {
         if (getDirectionCall.isCanceled()) {
             return;
         }
@@ -150,52 +159,56 @@ public class RouteEditorFragment extends Fragment {
         if (response != null && response.isSuccessful()) {
             GoogleDirectionsResult body = response.body();
             if (body != null) {
-                setRoutes(body.getRoutes());
+                drawRoutes(body.getRoutes());
             }
         }
     }
 
-    private void setRoutes(ArrayList<Route> routes) {
+    private void drawRoutes(ArrayList<Route> routes) {
+        // clear previous polylines
+        for (Polyline polyline : polylines) {
+            polyline.remove();
+        }
+
         if (routes.size() == 0) {
             return;
         }
 
         this.route = routes.get(0);
 
-        // clear previous polylines
-        for (Polyline polyline : polylines) {
-            polyline.remove();
-        }
-
         // TODO MEDIUM how to query for multiple routes
-        // TODO MEDIUM route picker
+        // TODO MEDIUM route selector
         ArrayList<PolylineOptions> polylineOptionsList = new ArrayList<>();
-        ArrayList<CircleOptions> circleOptionsList = new ArrayList<>();
 
         for (Route route : routes) {
-
-            PolylineOptions polylineOptions = new PolylineOptions();
-            polylineOptions.color(Color.BLUE);
-            polylineOptionsList.add(polylineOptions);
-            for (Leg leg : route.getLegs()) {
-                for (Step step : leg.getSteps()) {
-                    List<LatLng> polylinePoints = PolyUtil.decode(step.getPolyline().getPoints());
-                    for (LatLng polylinePoint : polylinePoints) {
-                        polylineOptions.add(polylinePoint);
-                    }
-                }
-            }
+            drawRoute(route);
         }
 
-        for (PolylineOptions polylineOptions : polylineOptionsList) {
-            polylines.add(googleMap.addPolyline(polylineOptions));
+        onRouteEditListener.onRouteEdit(route);
+    }
+
+    private void drawRoute(Route route) {
+
+        // TODO HIGH draw circle
+        // TODO CRITICAL waypoints
+        ArrayList<CircleOptions> circleOptionsList = new ArrayList<>();
+
+        PolylineOptions polylineOptions = new PolylineOptions();
+        polylineOptions.color(Color.BLUE);
+        for (Leg leg : route.getLegs()) {
+            for (Step step : leg.getSteps()) {
+                List<LatLng> polylinePoints = PolyUtil.decode(step.getPolyline().getPoints());
+                for (LatLng polylinePoint : polylinePoints) {
+                    polylineOptions.add(polylinePoint);
+                }
+            }
         }
 
         for (CircleOptions circleOptions : circleOptionsList) {
             googleMap.addCircle(circleOptions);
         }
 
-        onRouteEditListener.onRouteEdit(route);
+        polylines.add(googleMap.addPolyline(polylineOptions));
     }
 
     public void setOnRouteEditListener(OnRouteEditListener onRouteEditedListener) {
