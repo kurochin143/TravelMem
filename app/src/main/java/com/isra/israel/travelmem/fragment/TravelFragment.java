@@ -3,8 +3,6 @@ package com.isra.israel.travelmem.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -15,7 +13,10 @@ import android.widget.TextView;
 
 import com.isra.israel.travelmem.R;
 import com.isra.israel.travelmem.model.Travel;
+import com.isra.israel.travelmem.model.TravelImage;
 import com.isra.israel.travelmem.model.directions.Route;
+
+import java.util.ArrayList;
 
 public class TravelFragment extends Fragment {
 
@@ -23,7 +24,7 @@ public class TravelFragment extends Fragment {
 
     private Travel travel;
 
-    private OnTravelEditedListener onTravelEditedListener;
+    private OnTravelEditListener onTravelEditListener;
 
     public TravelFragment() {
         // Required empty public constructor
@@ -71,7 +72,7 @@ public class TravelFragment extends Fragment {
                         nameTextView.setText(nameEditText.getText());
                         travel.setName(nameTextView.getText().toString());
 
-                        onTravelEditedListener.onTravelEdited(travel);
+                        onTravelEditListener.onTravelEdit(travel);
 
                         return true;
                     }
@@ -92,16 +93,36 @@ public class TravelFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 RouteEditorFragment routeEditorFragment = RouteEditorFragment.newInstance(travel.getRoute());
-                routeEditorFragment.setOnRouteEditedListener(new RouteEditorFragment.OnRouteEditedListener() {
+                routeEditorFragment.setOnRouteEditListener(new RouteEditorFragment.OnRouteEditListener() {
                     @Override
-                    public void onRouteEdited(Route route) {
+                    public void onRouteEdit(Route route) {
                         travel.setRoute(route);
-                        onTravelEditedListener.onTravelEdited(travel);
+                        onTravelEditListener.onTravelEdit(travel);
                     }
                 });
 
                 getActivity().getSupportFragmentManager().beginTransaction()
                         .add(R.id.f_travel_c_root, routeEditorFragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+
+        view.findViewById(R.id.f_travel_b_view_images).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TravelImagesFragment travelImagesFragment = TravelImagesFragment.newInstance(travel.getImages());
+                travelImagesFragment.setOnTravelImagesEditedListener(new TravelImagesFragment.OnTravelImagesEditedListener() {
+                    @Override
+                    public void onTravelImagesEditedListener(ArrayList<TravelImage> travelImages) {
+                        travel.setImages(travelImages);
+
+                        onTravelEditListener.onTravelEdit(travel);
+                    }
+                });
+
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .add(R.id.f_travel_c_root, travelImagesFragment)
                         .addToBackStack(null)
                         .commit();
             }
@@ -113,8 +134,8 @@ public class TravelFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnTravelEditedListener) {
-            onTravelEditedListener = (OnTravelEditedListener) context;
+        if (context instanceof OnTravelEditListener) {
+            onTravelEditListener = (OnTravelEditListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnTravelEditedListener");
@@ -124,10 +145,10 @@ public class TravelFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        onTravelEditedListener = null;
+        onTravelEditListener = null;
     }
 
-    public interface OnTravelEditedListener {
-        void onTravelEdited(Travel travel);
+    public interface OnTravelEditListener {
+        void onTravelEdit(Travel travel);
     }
 }

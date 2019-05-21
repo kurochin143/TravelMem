@@ -14,7 +14,6 @@ import com.isra.israel.travelmem.dao.TravelMemLocalCacheDAO;
 import com.isra.israel.travelmem.fragment.TravelFragment;
 import com.isra.israel.travelmem.model.Travel;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +23,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class TravelsActivity extends AppCompatActivity implements TravelFragment.OnTravelEditedListener {
+public class TravelsActivity extends AppCompatActivity implements TravelFragment.OnTravelEditListener {
 
     private TravelsAdapter travelsAdapter;
     private Call<HashMap<String, Travel>> getTravelsCall;
@@ -44,9 +43,9 @@ public class TravelsActivity extends AppCompatActivity implements TravelFragment
         travelsAdapter = new TravelsAdapter();
         recyclerView.setAdapter(travelsAdapter);
 
-        travelsAdapter.setOnTravelClickedListener(new TravelsAdapter.OnTravelClickedListener() {
+        travelsAdapter.setOnTravelClickListener(new TravelsAdapter.OnTravelClickListener() {
             @Override
-            public void onTravelClicked(Travel travel, int position) {
+            public void onTravelClick(Travel travel, int position) {
                 openedTravelPosition = position;
                 getSupportFragmentManager().beginTransaction()
                         .add(R.id.a_travels_c_root, TravelFragment.newInstance(travel))
@@ -112,7 +111,7 @@ public class TravelsActivity extends AppCompatActivity implements TravelFragment
     }
 
     @Override
-    public void onTravelEdited(Travel travel) {
+    public void onTravelEdit(Travel travel) {
         travel.setLastUpdatedTime(System.currentTimeMillis());
         travelsAdapter.setTravelAt(travel, openedTravelPosition);
 

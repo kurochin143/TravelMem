@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragment.TravelImageFragment"
+    android:background="#FFFFFF">
+
+    <ImageView
+        android:id="@+id/f_travel_i_image"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/f_travel_c_details"/>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/f_travel_c_details"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/f_travel_i_image"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/f_travel_image_t_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Chicago"/>
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+
+                <ViewSwitcher
+                    android:id="@+id/f_travel_image_vs_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/f_travel_image_t_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Description"/>
+
+                    <EditText
+                        android:id="@+id/f_travel_image_et_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Description Edit Text"
+                        android:imeActionId="1" />
+
+                </ViewSwitcher>
+
+            </ScrollView>
+
+
+        </LinearLayout>
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.constraint.ConstraintLayout>

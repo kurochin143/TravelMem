@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class TravelsAdapter extends RecyclerView.Adapter<TravelsAdapter.ViewHolder> {
 
     private ArrayList<Travel> travels = new ArrayList<>();
-    private OnTravelClickedListener onTravelClickedListener;
+    private OnTravelClickListener onTravelClickListener;
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -33,7 +33,7 @@ public class TravelsAdapter extends RecyclerView.Adapter<TravelsAdapter.ViewHold
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onTravelClickedListener.onTravelClicked(travel, position);
+                onTravelClickListener.onTravelClick(travel, position);
             }
         });
     }
@@ -68,11 +68,11 @@ public class TravelsAdapter extends RecyclerView.Adapter<TravelsAdapter.ViewHold
         private TextView endDateTextView;
     }
 
-    public void setOnTravelClickedListener(OnTravelClickedListener l) {
-        onTravelClickedListener = l;
+    public void setOnTravelClickListener(OnTravelClickListener l) {
+        onTravelClickListener = l;
     }
 
-    public interface OnTravelClickedListener {
-        void onTravelClicked(Travel travel, int position);
+    public interface OnTravelClickListener {
+        void onTravelClick(Travel travel, int position);
     }
 }

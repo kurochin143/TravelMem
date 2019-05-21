@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.isra.israel.travelmem.model.directions.Point;
 
 public abstract class TravelMedia implements Parcelable {
 
@@ -20,7 +21,7 @@ public abstract class TravelMedia implements Parcelable {
 
     @SerializedName("location")
     @Expose
-    private LatLng latLng;
+    private Point location;
 
     @SerializedName("description")
     @Expose
@@ -33,7 +34,7 @@ public abstract class TravelMedia implements Parcelable {
     protected TravelMedia(Parcel in) {
         type = in.readInt();
         uri = in.readString();
-        latLng = in.readParcelable(LatLng.class.getClassLoader());
+        location = in.readParcelable(Point.class.getClassLoader());
         description = in.readString();
     }
 
@@ -66,7 +67,7 @@ public abstract class TravelMedia implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(type);
         dest.writeString(uri);
-        dest.writeParcelable(latLng, flags);
+        dest.writeParcelable(location, flags);
         dest.writeString(description);
     }
 }

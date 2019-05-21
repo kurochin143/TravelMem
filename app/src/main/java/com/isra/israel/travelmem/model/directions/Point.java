@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.Gson;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -11,7 +12,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.isra.israel.travelmem.gson.TravelMemGson;
 
 import java.lang.reflect.Type;
 
@@ -73,13 +73,15 @@ public class Point implements Parcelable {
     }
 
     public static class RetrofitPointDeserializer implements JsonDeserializer<Point> {
+        private static final Gson gson = new Gson();
+
         @Override
         public Point deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             JsonObject pointJson = json.getAsJsonObject();
 
             // when deserializing from TravelMem api
-            if (pointJson.has("name")) { // it's a Point
-                return TravelMemGson.gson.fromJson(json, Point.class);
+            if (pointJson.has("name") || pointJson.has("latLng")) { // it's a Point
+                return gson.fromJson(json, Point.class);
             }
 
             // when deserializing from google directions api

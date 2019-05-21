@@ -12,17 +12,17 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.isra.israel.travelmem.R;
 
-public class TravelsMapFragment extends Fragment {
+public class TravelViewerFragment extends Fragment {
 
     private View fragmentView;
     private GoogleMap googleMap;
 
-    public TravelsMapFragment() {
+    public TravelViewerFragment() {
         // Required empty public constructor
     }
 
-    public static TravelsMapFragment newInstance() {
-        TravelsMapFragment fragment = new TravelsMapFragment();
+    public static TravelViewerFragment newInstance() {
+        TravelViewerFragment fragment = new TravelViewerFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -40,12 +40,12 @@ public class TravelsMapFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        fragmentView = inflater.inflate(R.layout.fragment_travels_map, container, false);
+        fragmentView = inflater.inflate(R.layout.fragment_travel_viewer, container, false);
         SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.fragment_travels_map_google_map);
         supportMapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
-                TravelsMapFragment.this.googleMap = googleMap;
+                TravelViewerFragment.this.googleMap = googleMap;
             }
         });
 

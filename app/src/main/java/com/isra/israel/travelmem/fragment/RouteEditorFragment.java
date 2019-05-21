@@ -46,7 +46,7 @@ public class RouteEditorFragment extends Fragment {
     private String destination;
     private Call<GoogleDirectionsResult> getDirectionCall;
 
-    private OnRouteEditedListener onRouteEditedListener;
+    private OnRouteEditListener onRouteEditListener;
 
     public RouteEditorFragment() {
         // Required empty public constructor
@@ -195,14 +195,14 @@ public class RouteEditorFragment extends Fragment {
             googleMap.addCircle(circleOptions);
         }
 
-        onRouteEditedListener.onRouteEdited(route);
+        onRouteEditListener.onRouteEdit(route);
     }
 
-    public void setOnRouteEditedListener(OnRouteEditedListener onRouteEditedListener) {
-        this.onRouteEditedListener = onRouteEditedListener;
+    public void setOnRouteEditListener(OnRouteEditListener onRouteEditedListener) {
+        this.onRouteEditListener = onRouteEditedListener;
     }
 
-    public interface OnRouteEditedListener {
-        void onRouteEdited(Route route);
+    public interface OnRouteEditListener {
+        void onRouteEdit(Route route);
     }
 }
