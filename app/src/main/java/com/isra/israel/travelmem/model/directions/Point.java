@@ -72,16 +72,30 @@ public class Point implements Parcelable {
         dest.writeParcelable(latLng, flags);
     }
 
+    private static final Gson gson = new Gson();
+
     public static class RetrofitPointDeserializer implements JsonDeserializer<Point> {
-        private static final Gson gson = new Gson();
+
+        private static int calls;
 
         @Override
         public Point deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             JsonObject pointJson = json.getAsJsonObject();
+            calls += 1;
 
             // when deserializing from TravelMem api
-            if (pointJson.has("name") || pointJson.has("latLng")) { // it's a Point
-                return gson.fromJson(json, Point.class);
+            boolean hasName = pointJson.has("name");
+            boolean hasLatLng = pointJson.has("latLng");
+            if (hasName || hasLatLng) { // it's a Point
+                Point point = new Point();
+                if (hasName) {
+                    point.setName(pointJson.get("name").getAsString());
+                }
+                if (hasLatLng) {
+                    point.setLatLng(LatLngJson.fromJson(pointJson.get("latLng")));
+                }
+
+                return point;
             }
 
             // when deserializing from google directions api

@@ -85,11 +85,11 @@ public class RouteEditorFragment extends Fragment {
         });
 
         AutocompleteSupportFragment originAutocompleteSupportFragment = (AutocompleteSupportFragment) getChildFragmentManager().findFragmentById(R.id.f_route_editor_f_autocomplete_origin);
-        originAutocompleteSupportFragment.setPlaceFields(Arrays.asList(Place.Field.NAME, Place.Field.LAT_LNG));
+        originAutocompleteSupportFragment.setPlaceFields(Arrays.asList(Place.Field.ADDRESS, Place.Field.LAT_LNG));
         originAutocompleteSupportFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(@NonNull Place place) {
-                origin.setName(place.getName());
+                origin.setName(place.getAddress());
                 origin.setLatLng(place.getLatLng());
 
                 requestDirectionByName();
@@ -102,11 +102,11 @@ public class RouteEditorFragment extends Fragment {
         });
 
         AutocompleteSupportFragment destinationAutocompleteSupportFragment = (AutocompleteSupportFragment) getChildFragmentManager().findFragmentById(R.id.f_route_editor_f_autocomplete_destination);
-        destinationAutocompleteSupportFragment.setPlaceFields(Arrays.asList(Place.Field.NAME, Place.Field.LAT_LNG));
+        destinationAutocompleteSupportFragment.setPlaceFields(Arrays.asList(Place.Field.ADDRESS, Place.Field.LAT_LNG));
         destinationAutocompleteSupportFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(@NonNull Place place) {
-                destination.setName(place.getName());
+                destination.setName(place.getAddress());
                 destination.setLatLng(place.getLatLng());
 
                 requestDirectionByName();
@@ -184,7 +184,7 @@ public class RouteEditorFragment extends Fragment {
             drawRoute(route);
         }
 
-        onRouteEditListener.onRouteEdit(route);
+        onRouteEditListener.onRouteEdit(route, origin, destination);
     }
 
     private void drawRoute(Route route) {
@@ -216,6 +216,6 @@ public class RouteEditorFragment extends Fragment {
     }
 
     public interface OnRouteEditListener {
-        void onRouteEdit(Route route);
+        void onRouteEdit(Route route, Point origin, Point destination);
     }
 }

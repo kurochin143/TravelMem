@@ -15,6 +15,7 @@ import com.isra.israel.travelmem.R;
 import com.isra.israel.travelmem.model.Travel;
 import com.isra.israel.travelmem.model.TravelImage;
 import com.isra.israel.travelmem.model.TravelVideo;
+import com.isra.israel.travelmem.model.directions.Point;
 import com.isra.israel.travelmem.model.directions.Route;
 
 import java.util.ArrayList;
@@ -101,14 +102,29 @@ public class TravelFragment extends Fragment {
         TextView endDateTextView = view.findViewById(R.id.f_travel_t_end_date);
         endDateTextView.setText(travel.getEndDate());
 
+        final TextView originTextView = view.findViewById(R.id.f_travel_t_origin);
+        if (travel.getOrigin() != null) {
+            originTextView.setText(travel.getOrigin().getName());
+        }
+        final TextView destinationTextView = view.findViewById(R.id.f_travel_t_destination);
+        if (travel.getDestination() != null) {
+            destinationTextView.setText(travel.getDestination().getName());
+        }
+
         view.findViewById(R.id.f_travel_b_route).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 RouteEditorFragment routeEditorFragment = RouteEditorFragment.newInstance(travel.getRoute());
                 routeEditorFragment.setOnRouteEditListener(new RouteEditorFragment.OnRouteEditListener() {
                     @Override
-                    public void onRouteEdit(Route route) {
+                    public void onRouteEdit(Route route, Point origin, Point destination) {
                         travel.setRoute(route);
+                        travel.setOrigin(origin);
+                        travel.setDestination(destination);
+
+                        originTextView.setText(origin.getName());
+                        destinationTextView.setText(destination.getName());
+
                         onTravelEditListener.onTravelEdit(travel);
                     }
                 });
