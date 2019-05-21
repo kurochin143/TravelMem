@@ -50,6 +50,14 @@ public abstract class TravelMedia implements Parcelable {
         this.uri = uri;
     }
 
+    public Point getLocation() {
+        return location;
+    }
+
+    public void setLocation(Point location) {
+        this.location = location;
+    }
+
     public String getDescription() {
         return description;
     }

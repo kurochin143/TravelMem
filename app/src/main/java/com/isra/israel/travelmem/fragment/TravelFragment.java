@@ -55,7 +55,11 @@ public class TravelFragment extends Fragment {
         view.findViewById(R.id.f_travel_b_view_on_map).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                
+                TravelMapViewFragment travelMapViewFragment = TravelMapViewFragment.newInstance(travel);
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .add(R.id.f_travel_fl_root, travelMapViewFragment)
+                        .addToBackStack(null)
+                        .commit();
             }
         });
 
@@ -109,7 +113,7 @@ public class TravelFragment extends Fragment {
                 });
 
                 getActivity().getSupportFragmentManager().beginTransaction()
-                        .add(R.id.f_travel_c_root, routeEditorFragment)
+                        .add(R.id.f_travel_fl_root, routeEditorFragment)
                         .addToBackStack(null)
                         .commit();
             }
@@ -129,7 +133,7 @@ public class TravelFragment extends Fragment {
                 });
 
                 getActivity().getSupportFragmentManager().beginTransaction()
-                        .add(R.id.f_travel_c_root, travelImagesFragment)
+                        .add(R.id.f_travel_fl_root, travelImagesFragment)
                         .addToBackStack(null)
                         .commit();
             }
