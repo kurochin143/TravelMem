@@ -15,8 +15,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
-import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -53,7 +53,7 @@ public class TravelMemAPIDAO {
         @POST(TRAVELS + "{uid}/" + JSON)
         Call<Pair<String, String>> addTravel(@Path(value = "uid") String uid, @Query(value = "auth") String idToken, @Body Travel travel);
 
-        @PUT(TRAVELS + "{uid}/{travelId}" + JSON)
+        @PATCH(TRAVELS + "{uid}/{travelId}" + JSON)
         Call<ResponseBody> updateTravel(@Path(value = "uid") String uid, @Path(value = "travelId") String travelId, @Query(value = "auth") String idToken, @Body Travel travel);
 
         @GET(USERS + "{uid}/" + JSON)

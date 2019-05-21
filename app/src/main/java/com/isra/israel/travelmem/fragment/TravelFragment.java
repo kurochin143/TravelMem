@@ -3,9 +3,14 @@ package com.isra.israel.travelmem.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.TypedValue;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.isra.israel.travelmem.R;
@@ -46,18 +51,46 @@ public class TravelFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_travel, container, false);
 
-        TextView nameTextView = view.findViewById(R.id.f_travel_t_name);
+        final TextView nameTextView = view.findViewById(R.id.f_travel_t_name);
         nameTextView.setText(travel.getName());
+        nameTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                nameTextView.setVisibility(View.GONE);
+                final EditText nameEditText = new EditText(getContext());
+                nameEditText.setTextSize(TypedValue.COMPLEX_UNIT_SP, nameTextView.getTextSize());
+                nameEditText.setLayoutParams(nameTextView.getLayoutParams());
+                nameEditText.setMaxLines(1);
+                nameEditText.setImeActionLabel("enter", KeyEvent.KEYCODE_ENTER);
+                nameEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+
+                        ((ViewGroup)nameEditText.getParent()).removeView(nameEditText);
+                        nameTextView.setVisibility(View.VISIBLE);
+                        nameTextView.setText(nameEditText.getText());
+                        travel.setName(nameTextView.getText().toString());
+
+                        onTravelEditedListener.onTravelEdited(travel);
+
+                        return true;
+                    }
+                });
+
+                ViewGroup viewGroup = (ViewGroup)nameTextView.getParent();
+                viewGroup.addView(nameEditText, viewGroup.indexOfChild(nameTextView));
+            }
+        });
+
         TextView startDateTextView = view.findViewById(R.id.f_travel_t_start_date);
         startDateTextView.setText(travel.getStartDate());
+
         TextView endDateTextView = view.findViewById(R.id.f_travel_t_end_date);
         endDateTextView.setText(travel.getEndDate());
 
         view.findViewById(R.id.f_travel_b_edit_route).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO NOW open route editor
-
                 RouteEditorFragment routeEditorFragment = RouteEditorFragment.newInstance(travel.getRoute());
                 routeEditorFragment.setOnRouteEditedListener(new RouteEditorFragment.OnRouteEditedListener() {
                     @Override

@@ -145,4 +145,33 @@ public class TravelMemLocalCacheDAO {
         }
     }
 
+    public static ArrayList<Travel> updateTravels(Context context, ArrayList<Travel> inTravels) {
+        ArrayList<Travel> travels = getTravels(context);
+
+        ArrayList<Travel> newTravels = new ArrayList<>();
+        for (int i = 0; i < inTravels.size(); ++i) {
+            Travel inTravel = inTravels.get(i);
+            boolean found = false;
+            for (int j = 0; j < travels.size(); ++j) {
+                Travel travel = travels.get(j);
+                if (inTravel.getId().equals(travel.getId())) {
+                    found = true;
+                    // inTravel is newer
+                    if (inTravel.getLastUpdatedTime() > travel.getLastUpdatedTime()) {
+                        travels.set(j, inTravel);
+                        updateTravel(context, inTravel);
+                    }
+                }
+            }
+
+            if (!found) {
+                newTravels.add(inTravel);
+                addTravel(context, inTravel);
+            }
+        }
+
+        travels.addAll(newTravels);
+        return travels;
+    }
+
 }

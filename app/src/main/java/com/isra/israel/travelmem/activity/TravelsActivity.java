@@ -10,13 +10,16 @@ import com.isra.israel.travelmem.R;
 import com.isra.israel.travelmem.adapter.TravelsAdapter;
 import com.isra.israel.travelmem.api.TravelMemAPIDAO;
 import com.isra.israel.travelmem.dao.FirebaseSessionSPDAO;
+import com.isra.israel.travelmem.dao.TravelMemLocalCacheDAO;
 import com.isra.israel.travelmem.fragment.TravelFragment;
 import com.isra.israel.travelmem.model.Travel;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -102,14 +105,40 @@ public class TravelsActivity extends AppCompatActivity implements TravelFragment
                 travels.add(travel);
             }
 
-            travelsAdapter.setTravels(travels);
+            ArrayList<Travel> updatedTravels = TravelMemLocalCacheDAO.updateTravels(this, travels);
+
+            travelsAdapter.setTravels(updatedTravels);
         }
     }
 
     @Override
     public void onTravelEdited(Travel travel) {
+        travel.setLastUpdatedTime(System.currentTimeMillis());
         travelsAdapter.setTravelAt(travel, openedTravelPosition);
 
-        
+        // update travel at TravelMemAPI
+        final Call<ResponseBody> updateTravelCall = TravelMemAPIDAO.apiService.updateTravel(
+                FirebaseSessionSPDAO.getUid(this),
+                travel.getId(),
+                FirebaseSessionSPDAO.getIdToken(this),
+                travel
+        );
+
+        // NOTE: if this fails. SyncService will take care of it
+        updateTravelCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
+
+        // update travel locally
+        TravelMemLocalCacheDAO.updateTravel(this, travel);
+
     }
 }
