@@ -135,7 +135,8 @@ public class TravelVideosFragment extends Fragment {
         if (requestCode == RC_VIDEO && resultCode == Activity.RESULT_OK && data.getData() != null) {
             TravelVideo travelVideo = new TravelVideo();
             // TODO VERY LOW unique file name generator or just check if file already exists and increment i
-            try {
+            try { // save external file internally because Uri access expires
+                // TODO EXPERIMENT store 'new File(data.getData).getPath()' and see if it'll work tomorrow?
                 InputStream inputStream = getContext().getContentResolver().openInputStream(data.getData());
 
                 File uriFile = new File(data.getData().getPath());
