@@ -1,9 +1,9 @@
 package com.isra.israel.travelmem.model;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.isra.israel.travelmem.model.directions.Point;
@@ -15,9 +15,9 @@ public abstract class TravelMedia implements Parcelable {
 
     protected int type;
 
-    @SerializedName("uri")
+    @SerializedName("uriStr")
     @Expose
-    private String uri;
+    private String uriStr;
 
     @SerializedName("location")
     @Expose
@@ -33,7 +33,7 @@ public abstract class TravelMedia implements Parcelable {
 
     protected TravelMedia(Parcel in) {
         type = in.readInt();
-        uri = in.readString();
+        uriStr = in.readString();
         location = in.readParcelable(Point.class.getClassLoader());
         description = in.readString();
     }
@@ -42,12 +42,16 @@ public abstract class TravelMedia implements Parcelable {
         return type;
     }
 
-    public String getUri() {
-        return uri;
+    public Uri getUri() {
+        return Uri.parse(uriStr);
     }
 
-    public void setUri(String uri) {
-        this.uri = uri;
+    public String getUriStr() {
+        return uriStr;
+    }
+
+    public void setUriStr(String uriStr) {
+        this.uriStr = uriStr;
     }
 
     public Point getLocation() {
@@ -74,7 +78,7 @@ public abstract class TravelMedia implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(type);
-        dest.writeString(uri);
+        dest.writeString(uriStr);
         dest.writeParcelable(location, flags);
         dest.writeString(description);
     }

@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -20,7 +19,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
@@ -114,9 +112,9 @@ public class TravelMapViewFragment extends Fragment {
                 // add media marker
                 if (travel.getImages() != null) {
                     for (TravelImage travelImage : travel.getImages()) {
-                        if (travelImage.getUri() != null && travelImage.getLocation() != null && travelImage.getLocation().getLatLng() != null) {
+                        if (travelImage.getUriStr() != null && travelImage.getLocation() != null && travelImage.getLocation().getLatLng() != null) {
                             try {
-                                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), Uri.parse(travelImage.getUri()));
+                                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), travelImage.getUri());
                                 googleMap.addMarker(new MarkerOptions()
                                         .icon(BitmapDescriptorFactory.fromBitmap(bitmap))
                                         .position(travelImage.getLocation().getLatLng())

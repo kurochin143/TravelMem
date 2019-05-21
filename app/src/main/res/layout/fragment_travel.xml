@@ -71,6 +71,7 @@
                 android:text="View Images" />
 
             <Button
+                android:id="@+id/f_travel_b_view_videos"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="View Videos"/>

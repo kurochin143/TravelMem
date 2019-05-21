@@ -27,10 +27,10 @@ public class TravelImagesAdapter extends RecyclerView.Adapter<TravelImagesAdapte
     public void onBindViewHolder(ViewHolder holder, final int position) {
         final TravelImage travelImage = travelImages.get(position);
 
-        if (travelImage.getUri() == null) {
+        if (travelImage.getUriStr() == null) {
             holder.imageView.setImageURI(null);
         } else {
-            holder.imageView.setImageURI(Uri.parse(travelImage.getUri()));
+            holder.imageView.setImageURI(travelImage.getUri());
         }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {

@@ -82,6 +82,7 @@ public class TravelsActivity extends AppCompatActivity implements TravelFragment
 
             @Override
             public void onFailure(Call<HashMap<String, Travel>> call, Throwable t) {
+                t.printStackTrace();
                 onGetTravelsCallFinished(null);
             }
         });

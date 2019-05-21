@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.isra.israel.travelmem.R;
 import com.isra.israel.travelmem.model.Travel;
 import com.isra.israel.travelmem.model.TravelImage;
+import com.isra.israel.travelmem.model.TravelVideo;
 import com.isra.israel.travelmem.model.directions.Route;
 
 import java.util.ArrayList;
@@ -123,7 +124,7 @@ public class TravelFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 TravelImagesFragment travelImagesFragment = TravelImagesFragment.newInstance(travel.getImages());
-                travelImagesFragment.setOnTravelImagesEditedListener(new TravelImagesFragment.OnTravelImagesEditedListener() {
+                travelImagesFragment.setOnTravelImagesEditListener(new TravelImagesFragment.OnTravelImagesEditListener() {
                     @Override
                     public void onTravelImagesEditedListener(ArrayList<TravelImage> travelImages) {
                         travel.setImages(travelImages);
@@ -134,6 +135,26 @@ public class TravelFragment extends Fragment {
 
                 getActivity().getSupportFragmentManager().beginTransaction()
                         .add(R.id.f_travel_fl_root, travelImagesFragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+
+        view.findViewById(R.id.f_travel_b_view_videos).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TravelVideosFragment travelVideosFragment = TravelVideosFragment.newInstance(travel.getVideos());
+                travelVideosFragment.setOnTravelVideosEditListener(new TravelVideosFragment.OnTravelVideosEditListener() {
+                    @Override
+                    public void onTravelVideosEditListener(ArrayList<TravelVideo> travelVideos) {
+                        travel.setVideos(travelVideos);
+
+                        onTravelEditListener.onTravelEdit(travel);
+                    }
+                });
+
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .add(R.id.f_travel_fl_root, travelVideosFragment)
                         .addToBackStack(null)
                         .commit();
             }

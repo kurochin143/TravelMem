@@ -49,9 +49,9 @@ public class TravelImageFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_travel_image, container, false);
-        ImageView imageView = view.findViewById(R.id.f_travel_i_image);
-        if (travelImage.getUri() != null) {
-            imageView.setImageURI(Uri.parse(travelImage.getUri()));
+        ImageView imageView = view.findViewById(R.id.f_travel_image_i_image);
+        if (travelImage.getUriStr() != null) {
+            imageView.setImageURI(travelImage.getUri());
         }
 
         final ViewSwitcher viewSwitcher = view.findViewById(R.id.f_travel_image_vs_description);

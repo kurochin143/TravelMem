@@ -20,7 +20,7 @@ public class TravelImagesFragment extends Fragment {
     private static final String ARG_TRAVEL_IMAGES = "travel_images";
     private static final int RC_IMAGE = 0;
 
-    private OnTravelImagesEditedListener onTravelImagesEditedListener;
+    private OnTravelImagesEditListener onTravelImagesEditListener;
     private int openedTravelImagePosition;
 
     private TravelImagesAdapter travelImagesAdapter;
@@ -47,9 +47,13 @@ public class TravelImagesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        ArrayList<TravelImage> travelImages = getArguments().getParcelableArrayList(ARG_TRAVEL_IMAGES);
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_travel_images, container, false);
+
+        ArrayList<TravelImage> travelImages = getArguments().getParcelableArrayList(ARG_TRAVEL_IMAGES);
+        if (travelImages == null) {
+            travelImages = new ArrayList<>();
+        }
 
         travelImagesAdapter = new TravelImagesAdapter();
         travelImagesAdapter.setTravelImages(travelImages);
@@ -62,13 +66,13 @@ public class TravelImagesFragment extends Fragment {
                 travelImageFragment.setOnTravelImageEditListener(new TravelImageFragment.OnTravelImageEditListener() {
                     @Override
                     public void onTravelImageEdit(TravelImage travelImage) {
-                        if (travelImage == null) { // deleted
+                        if (travelImage == null) { // removed
                             travelImagesAdapter.removeTravelImage(openedTravelImagePosition);
                         } else {
                             travelImagesAdapter.setTravelImageAt(travelImage, openedTravelImagePosition);
                         }
 
-                        onTravelImagesEditedListener.onTravelImagesEditedListener(travelImagesAdapter.getTravelImages());
+                        onTravelImagesEditListener.onTravelImagesEditedListener(travelImagesAdapter.getTravelImages());
                     }
                 });
 
@@ -104,19 +108,19 @@ public class TravelImagesFragment extends Fragment {
 
         if (requestCode == RC_IMAGE && resultCode == Activity.RESULT_OK && data.getData() != null) {
             TravelImage travelImage = new TravelImage();
-            travelImage.setUri(data.getData().toString());
+            travelImage.setUriStr(data.getData().toString());
 
             travelImagesAdapter.addTravelImage(travelImage);
 
-            onTravelImagesEditedListener.onTravelImagesEditedListener(travelImagesAdapter.getTravelImages());
+            onTravelImagesEditListener.onTravelImagesEditedListener(travelImagesAdapter.getTravelImages());
         }
     }
 
-    public void setOnTravelImagesEditedListener(OnTravelImagesEditedListener l) {
-        onTravelImagesEditedListener = l;
+    public void setOnTravelImagesEditListener(OnTravelImagesEditListener l) {
+        onTravelImagesEditListener = l;
     }
 
-    public interface OnTravelImagesEditedListener {
+    public interface OnTravelImagesEditListener {
         void onTravelImagesEditedListener(ArrayList<TravelImage> travelImages);
     }
 }
