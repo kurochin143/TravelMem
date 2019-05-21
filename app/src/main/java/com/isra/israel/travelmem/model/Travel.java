@@ -61,8 +61,7 @@ public class Travel implements Parcelable {
     private long lastUpdatedTime;
 
     public Travel() {
-        creationTime = System.currentTimeMillis();
-        lastUpdatedTime = creationTime;
+
     }
 
     protected Travel(Parcel in) {

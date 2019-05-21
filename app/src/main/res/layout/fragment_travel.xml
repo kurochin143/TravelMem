@@ -13,6 +13,12 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <Button
+            android:id="@+id/f_travel_b_view_on_map"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="View On Map"/>
+
         <TextView
             android:id="@+id/f_travel_t_name"
             android:layout_width="match_parent"
@@ -34,37 +40,69 @@
             android:text="End Date"
             android:textSize="20sp"/>
 
-        <Button
-            android:id="@+id/f_travel_b_edit_route"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Edit Route"/>
-
         <TextView
+            android:id="@+id/f_travel_t_origin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Origin"
             android:textSize="20sp"/>
 
         <TextView
+            android:id="@+id/f_travel_t_destination"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Destination"
             android:textSize="20sp"/>
 
-        <TextView
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/f_travel_b_route"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="00/00/0000"
-            android:textSize="20sp"/>
-
-
+            android:text="Route"/>
 
         <Button
             android:id="@+id/f_travel_b_view_images"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="View Images" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="View Videos"/>
+
+        <TextView
+            android:id="@+id/f_travel_t_created_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="00/00/0000"
+            android:textSize="20sp"/>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ViewSwitcher
+                android:id="@+id/f_travel_vs_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/f_travel_t_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Description"/>
+
+                <EditText
+                    android:id="@+id/f_travel_et_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Description Edit Text"
+                    android:imeOptions="actionDone" />
+
+            </ViewSwitcher>
+
+        </ScrollView>
 
     </LinearLayout>
 

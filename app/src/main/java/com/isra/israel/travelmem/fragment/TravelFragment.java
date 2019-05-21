@@ -52,6 +52,13 @@ public class TravelFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_travel, container, false);
 
+        view.findViewById(R.id.f_travel_b_view_on_map).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                
+            }
+        });
+
         final TextView nameTextView = view.findViewById(R.id.f_travel_t_name);
         nameTextView.setText(travel.getName());
         nameTextView.setOnClickListener(new View.OnClickListener() {
@@ -89,7 +96,7 @@ public class TravelFragment extends Fragment {
         TextView endDateTextView = view.findViewById(R.id.f_travel_t_end_date);
         endDateTextView.setText(travel.getEndDate());
 
-        view.findViewById(R.id.f_travel_b_edit_route).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.f_travel_b_route).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 RouteEditorFragment routeEditorFragment = RouteEditorFragment.newInstance(travel.getRoute());
