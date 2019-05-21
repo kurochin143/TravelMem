@@ -37,8 +37,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-
-
                 <ViewSwitcher
                     android:id="@+id/f_travel_image_vs_description"
                     android:layout_width="match_parent"
@@ -55,7 +53,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Description Edit Text"
-                        android:imeActionId="1" />
+                        android:imeOptions="actionDone" />
 
                 </ViewSwitcher>
 

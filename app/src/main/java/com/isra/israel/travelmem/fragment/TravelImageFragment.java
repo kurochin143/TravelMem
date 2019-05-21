@@ -1,5 +1,6 @@
 package com.isra.israel.travelmem.fragment;
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,6 +8,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -53,26 +55,31 @@ public class TravelImageFragment extends Fragment {
         }
 
         final ViewSwitcher viewSwitcher = view.findViewById(R.id.f_travel_image_vs_description);
-        viewSwitcher.setOnClickListener(new View.OnClickListener() {
+        final TextView descriptionTextView = view.findViewById(R.id.f_travel_image_t_description);
+        descriptionTextView.setText(travelImage.getDescription());
+        final EditText descriptionEditText = view.findViewById(R.id.f_travel_image_et_description);
+
+        descriptionTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 viewSwitcher.showNext();
+                descriptionEditText.setText(descriptionTextView.getText());
+                descriptionEditText.requestFocus();
+
+                InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(descriptionEditText, InputMethodManager.SHOW_IMPLICIT);
             }
         });
 
-        final TextView descriptionTextView = view.findViewById(R.id.f_travel_image_t_description);
-        descriptionTextView.setText(travelImage.getDescription());
-
-        final EditText descriptionEditText = view.findViewById(R.id.f_travel_image_et_description);
         descriptionEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (event.getAction() == KeyEvent.KEYCODE_ENTER) {
+                if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                    viewSwitcher.showPrevious();
                     travelImage.setDescription(descriptionEditText.getText().toString());
                     onTravelImageEditListener.onTravelImageEdit(travelImage);
 
                     descriptionTextView.setText(descriptionEditText.getText());
-                    viewSwitcher.showNext();
                 }
 
                 return true;
