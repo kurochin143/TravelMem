@@ -83,8 +83,10 @@ public class TravelsActivity extends AppCompatActivity {
                             }
                         });
 
+                        String uid = FirebaseSessionSPDAO.getUid(TravelsActivity.this);
+
                         // update travel local cache
-                        TravelMemLocalCacheDAO.updateTravel(TravelsActivity.this, travel);
+                        TravelMemLocalCacheDAO.updateTravel(TravelsActivity.this, uid, travel);
                     }
                 });
 
@@ -113,7 +115,9 @@ public class TravelsActivity extends AppCompatActivity {
                             }
                         });
 
-                        TravelMemLocalCacheDAO.deleteTravel(TravelsActivity.this, id);
+                        String uid = FirebaseSessionSPDAO.getUid(TravelsActivity.this);
+
+                        TravelMemLocalCacheDAO.deleteTravel(TravelsActivity.this, uid, id);
                     }
                 });
 
@@ -152,8 +156,10 @@ public class TravelsActivity extends AppCompatActivity {
                                 if (response.isSuccessful() && response.body() != null) {
                                     travel.setId(response.body().name);
 
+                                    String uid = FirebaseSessionSPDAO.getUid(TravelsActivity.this);
+
                                     // update travel local cache
-                                    TravelMemLocalCacheDAO.addTravel(TravelsActivity.this, travel);
+                                    TravelMemLocalCacheDAO.addTravel(TravelsActivity.this, uid, travel);
                                 }
                             }
 
@@ -225,7 +231,9 @@ public class TravelsActivity extends AppCompatActivity {
                 travels.add(travel);
             }
 
-            ArrayList<Travel> updatedTravels = TravelMemLocalCacheDAO.updateTravels(this, travels);
+            String uid = FirebaseSessionSPDAO.getUid(this);
+
+            ArrayList<Travel> updatedTravels = TravelMemLocalCacheDAO.updateTravels(this, uid, travels);
 
             travelsAdapter.setTravels(updatedTravels);
         }

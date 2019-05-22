@@ -21,8 +21,8 @@ public class TravelMemLocalCacheDAO {
     private static final String EXT_TRAVEL = ".travel";
     private static final String PATH_TRAVELS = PATH_TRAVEL_MEM + "/travels";
 
-    private static File getTravelsDir(Context context) {
-        File travelsDir = new File(context.getCacheDir().getPath() + "/" + PATH_TRAVELS);
+    private static File getTravelsDir(Context context, String uid) {
+        File travelsDir = new File(context.getCacheDir().getPath() + "/" + PATH_TRAVELS + "/" + uid);
         if (!travelsDir.exists()) {
             travelsDir.mkdirs();
         }
@@ -30,8 +30,8 @@ public class TravelMemLocalCacheDAO {
         return travelsDir;
     }
 
-    public static ArrayList<Travel> getTravels(Context context) {
-        File travelsDir = getTravelsDir(context);
+    public static ArrayList<Travel> getTravels(Context context, String uid) {
+        File travelsDir = getTravelsDir(context, uid);
 
         File[] travelFiles = travelsDir.listFiles();
 
@@ -63,8 +63,8 @@ public class TravelMemLocalCacheDAO {
         return travels;
     }
 
-    public static boolean doesTravelExist(Context context, String id) {
-        ArrayList<Travel> travels = getTravels(context);
+    public static boolean doesTravelExist(Context context, String id, String uid) {
+        ArrayList<Travel> travels = getTravels(context, uid);
 
         for (Travel travel : travels) {
             if (travel.getId().equals(id)) {
@@ -75,8 +75,8 @@ public class TravelMemLocalCacheDAO {
         return false;
     }
 
-    public static void addTravel(Context context, Travel travel) {
-        File travelsDir = getTravelsDir(context);
+    public static void addTravel(Context context, String uid, Travel travel) {
+        File travelsDir = getTravelsDir(context, uid);
 
         File travelFile = new File(travelsDir.getPath() + "/" + travel.getId() + EXT_TRAVEL);
 
@@ -103,24 +103,24 @@ public class TravelMemLocalCacheDAO {
 
     }
 
-    public static void deleteTravel(Context context, String id) {
-        ArrayList<Travel> travels = getTravels(context);
+    public static void deleteTravel(Context context, String uid, String id) {
+        ArrayList<Travel> travels = getTravels(context, uid);
 
         for (Travel travel : travels) {
             if (travel.getId().equals(id)) {
-                File travelFile = new File(getTravelsDir(context).getPath() + "/" + travel.getId() + EXT_TRAVEL);
+                File travelFile = new File(getTravelsDir(context, uid).getPath() + "/" + travel.getId() + EXT_TRAVEL);
 
                 travelFile.delete();
             }
         }
     }
 
-    public static void updateTravel(Context context, Travel inTravel) {
-        ArrayList<Travel> travels = getTravels(context);
+    public static void updateTravel(Context context, String uid, Travel inTravel) {
+        ArrayList<Travel> travels = getTravels(context, uid);
 
         for (Travel travel : travels) {
             if (travel.getId().equals(inTravel.getId())) {
-                File tempTravelFile = new File(getTravelsDir(context).getPath() + "/" + travel.getId() + EXT_TRAVEL + ".tmp");
+                File tempTravelFile = new File(getTravelsDir(context, uid).getPath() + "/" + travel.getId() + EXT_TRAVEL + ".tmp");
 
                 try {
                     tempTravelFile.createNewFile();
@@ -139,15 +139,15 @@ public class TravelMemLocalCacheDAO {
                     e.printStackTrace();
                 }
 
-                File travelFile = new File(getTravelsDir(context).getPath() + "/" + travel.getId() + EXT_TRAVEL);
+                File travelFile = new File(getTravelsDir(context, uid).getPath() + "/" + travel.getId() + EXT_TRAVEL);
 
                 tempTravelFile.renameTo(travelFile);
             }
         }
     }
 
-    public static ArrayList<Travel> updateTravels(Context context, ArrayList<Travel> inTravels) {
-        ArrayList<Travel> travels = getTravels(context);
+    public static ArrayList<Travel> updateTravels(Context context, String uid, ArrayList<Travel> inTravels) {
+        ArrayList<Travel> travels = getTravels(context, uid);
 
         ArrayList<Travel> newTravels = new ArrayList<>();
         for (int i = 0; i < inTravels.size(); ++i) {
@@ -160,14 +160,14 @@ public class TravelMemLocalCacheDAO {
                     // inTravel is newer
                     if (inTravel.getLastUpdatedTime() > travel.getLastUpdatedTime()) {
                         travels.set(j, inTravel);
-                        updateTravel(context, inTravel);
+                        updateTravel(context, uid, inTravel);
                     }
                 }
             }
 
             if (!found) {
                 newTravels.add(inTravel);
-                addTravel(context, inTravel);
+                addTravel(context, uid, inTravel);
             }
         }
 

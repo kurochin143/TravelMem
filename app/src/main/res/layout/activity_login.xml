@@ -18,14 +18,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/commonTextColor"
-            android:hint="Email"/>
+            android:hint="@string/email"/>
 
         <EditText
             android:id="@+id/a_login_et_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/commonTextColor"
-            android:hint="Password"/>
+            android:hint="@string/password"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="50dp"
-                android:text="Sign in"
+                android:text="@string/sign_in"
                 android:backgroundTint="@color/commonButtonColor"/>
 
             <Button
@@ -46,7 +46,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="50dp"
-                android:text="Register"
+                android:text="@string/register"
                 android:backgroundTint="@color/commonButtonColor"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

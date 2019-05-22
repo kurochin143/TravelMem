@@ -22,4 +22,5 @@
     <string name="register">Register</string>
     <string name="name">Name</string>
     <string name="add_video">Add Video</string>
+    <string name="sign_in">Sign in</string>
 </resources>
