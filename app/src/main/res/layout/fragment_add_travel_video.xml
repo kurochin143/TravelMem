@@ -20,14 +20,14 @@
             android:id="@+id/f_add_travel_video_t_video"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Video"
+            android:text="Please select a video"
             android:textSize="15sp"
             android:maxLines="1"/>
         <Button
-            android:id="@+id/f_add_travel_video_b_set_video"
+            android:id="@+id/f_add_travel_video_b_select_video"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Set Video"
+            android:text="Select Video"
             android:backgroundTint="@color/commonButtonColor"/>
 
         <EditText
@@ -35,6 +35,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Latitude"
+            android:inputType="numberDecimal"
+            android:maxLines="1"
             android:textColor="@color/commonTextColor"/>
 
         <EditText
@@ -42,6 +44,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Longitude"
+            android:inputType="numberDecimal"
+            android:maxLines="1"
             android:textColor="@color/commonTextColor"/>
 
         <EditText

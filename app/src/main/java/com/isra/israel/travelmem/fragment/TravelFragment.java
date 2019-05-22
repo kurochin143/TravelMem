@@ -98,9 +98,7 @@ public class TravelFragment extends Fragment {
                     onTravelDeleteListener.onTravelDelete(travel.getId());
 
                     // close fragment
-                    getActivity().getSupportFragmentManager().beginTransaction()
-                            .remove(TravelFragment.this)
-                            .commit();
+                    close();
                 }
             });
         }
@@ -115,9 +113,7 @@ public class TravelFragment extends Fragment {
                     onTravelCreateListener.onTravelCreate(travel);
 
                     // close fragment
-                    getActivity().getSupportFragmentManager().beginTransaction()
-                            .remove(TravelFragment.this)
-                            .commit();
+                    close();
                 }
             });
         } else {
@@ -131,9 +127,7 @@ public class TravelFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     // close fragment
-                    getActivity().getSupportFragmentManager().beginTransaction()
-                            .remove(TravelFragment.this)
-                            .commit();
+                    close();
                 }
             });
         } else {
@@ -307,6 +301,13 @@ public class TravelFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void close() {
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .remove(this)
+                .commit();
+        getActivity().getSupportFragmentManager().popBackStack();
     }
 
     public void setOnTravelEditListener(OnTravelEditListener l) {

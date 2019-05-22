@@ -59,6 +59,7 @@ public class TravelVideoFragment extends Fragment {
                 getActivity().getSupportFragmentManager().beginTransaction()
                         .remove(TravelVideoFragment.this)
                         .commit();
+                getActivity().getSupportFragmentManager().popBackStack();
             }
         });
 
