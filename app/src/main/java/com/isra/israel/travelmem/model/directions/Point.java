@@ -2,6 +2,7 @@ package com.isra.israel.travelmem.model.directions;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
@@ -59,6 +60,27 @@ public class Point implements Parcelable {
 
     public void setLatLng(LatLng latLng) {
         this.latLng = latLng;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        StringBuilder outStrB = new StringBuilder();
+        if (name != null) {
+            outStrB.append(name);
+            outStrB.append(".");
+        }
+
+        if (latLng != null) {
+            outStrB.append(" ");
+            outStrB.append("(");
+            outStrB.append(latLng.latitude);
+            outStrB.append(", ");
+            outStrB.append(latLng.longitude);
+            outStrB.append(")");
+        }
+
+        return outStrB.toString();
     }
 
     @Override

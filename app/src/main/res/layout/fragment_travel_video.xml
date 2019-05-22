@@ -40,13 +40,28 @@
                     android:backgroundTint="@color/deleteButtonColor"/>
 
                 <TextView
-                    android:id="@+id/f_travel_video_t_location"
+                    android:id="@+id/f_travel_video_t_location_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Chicago"
                     android:textColor="@color/commonTextColor"
-                    android:textSize="20sp"
-                    android:textStyle="bold"/>
+                    android:textSize="20sp"/>
+
+                <TextView
+                    android:id="@+id/f_travel_video_t_location_lat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="00.00000"
+                    android:textColor="@color/commonTextColor"
+                    android:textSize="15sp"/>
+
+                <TextView
+                    android:id="@+id/f_travel_video_t_location_lng"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="00.00000"
+                    android:textColor="@color/commonTextColor"
+                    android:textSize="15sp"/>
 
                 <ScrollView
                     android:layout_width="match_parent"

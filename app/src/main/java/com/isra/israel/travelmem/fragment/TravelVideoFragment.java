@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.VideoView;
 
 import com.isra.israel.travelmem.R;
@@ -53,7 +54,7 @@ public class TravelVideoFragment extends Fragment {
         view.findViewById(R.id.f_travel_video_b_delete).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO delete actual file
+                // TODO delete actual file. only do this when unique file name generation is implemented
 
                 onTravelVideoEditListener.onTravelVideoEdit(null);
                 getActivity().getSupportFragmentManager().beginTransaction()
@@ -62,6 +63,21 @@ public class TravelVideoFragment extends Fragment {
                 getActivity().getSupportFragmentManager().popBackStack();
             }
         });
+
+        TextView nameTextView = view.findViewById(R.id.f_travel_video_t_location_name);
+        TextView latTextView = view.findViewById(R.id.f_travel_video_t_location_lat);
+        TextView lngTextView = view.findViewById(R.id.f_travel_video_t_location_lng);
+        if (travelVideo.getLocation() != null) {
+            if (travelVideo.getLocation().getName() != null) {
+                nameTextView.setText(travelVideo.getLocation().getName());
+            } else {
+                nameTextView.setVisibility(View.GONE);
+            }
+            if (travelVideo.getLocation().getLatLng() != null) {
+                latTextView.setText(String.valueOf(travelVideo.getLocation().getLatLng().latitude));
+                lngTextView.setText(String.valueOf(travelVideo.getLocation().getLatLng().longitude));
+            }
+        }
 
         return view;
     }
