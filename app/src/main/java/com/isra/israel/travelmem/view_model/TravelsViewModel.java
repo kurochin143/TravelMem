@@ -29,6 +29,11 @@ public class TravelsViewModel extends ViewModel {
     }
 
     public void addTravel(String uid, String token, Travel travel) {
-
+        travelsRepository.addTravel(uid, token, travel);
     }
+
+    public void removeTravel(String uid, String token, String id) {
+        travelsRepository.removeTravel(uid, token, id);
+    }
+
 }

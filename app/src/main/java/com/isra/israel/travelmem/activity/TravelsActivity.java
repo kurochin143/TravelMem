@@ -32,8 +32,11 @@ import retrofit2.Response;
 
 public class TravelsActivity extends AppCompatActivity {
 
+    private String uid;
+    private String token;
     private TravelsAdapter travelsAdapter;
     private Call<HashMap<String, Travel>> getTravelsCall;
+    private TravelsViewModel travelsViewModel;
     private int openedTravelPosition;
 
     @Override
@@ -49,6 +52,22 @@ public class TravelsActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         travelsAdapter = new TravelsAdapter();
         recyclerView.setAdapter(travelsAdapter);
+
+        travelsViewModel = ViewModelProviders.of(this).get(TravelsViewModel.class);
+        uid = FirebaseSessionSPDAO.getUid(this);
+        token = FirebaseSessionSPDAO.getIdToken(this);
+
+        // travels observer
+        travelsViewModel.getTravelsLiveData(this, uid, token).observe(this, new Observer<ArrayList<Travel>>() {
+            @Override
+            public void onChanged(@Nullable ArrayList<Travel> travels) {
+                if (travels == null) {
+                    return;
+                }
+
+                travelsAdapter.setTravels(travels);
+            }
+        });
 
         // adapter
         travelsAdapter.setOnTravelClickListener(new TravelsAdapter.OnTravelClickListener() {
@@ -98,30 +117,31 @@ public class TravelsActivity extends AppCompatActivity {
                 travelFragment.setOnTravelDeleteListener(new TravelFragment.OnTravelDeleteListener() {
                     @Override
                     public void onTravelDelete(String id) {
+                        travelsViewModel.removeTravel(uid, token, id);
                         travelsAdapter.removeTravel(id);
 
-                        Call<ResponseBody> deleteTravelCall = TravelMemAPIDAO.apiService.deleteTravel(
-                                FirebaseSessionSPDAO.getUid(TravelsActivity.this),
-                                id,
-                                FirebaseSessionSPDAO.getIdToken(TravelsActivity.this)
-                        );
-
-                        // NOTE: if this fails. SyncService will take care of it
-                        deleteTravelCall.enqueue(new Callback<ResponseBody>() {
-                            @Override
-                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-
-                            }
-
-                            @Override
-                            public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-                            }
-                        });
-
-                        String uid = FirebaseSessionSPDAO.getUid(TravelsActivity.this);
-
-                        TravelMemLocalCacheDAO.deleteTravel(TravelsActivity.this, uid, id);
+//                        Call<ResponseBody> deleteTravelCall = TravelMemAPIDAO.apiService.deleteTravel(
+//                                FirebaseSessionSPDAO.getUid(TravelsActivity.this),
+//                                id,
+//                                FirebaseSessionSPDAO.getIdToken(TravelsActivity.this)
+//                        );
+//
+//                        // NOTE: if this fails. SyncService will take care of it
+//                        deleteTravelCall.enqueue(new Callback<ResponseBody>() {
+//                            @Override
+//                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+//
+//                            }
+//
+//                            @Override
+//                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+//
+//                            }
+//                        });
+//
+//                        String uid = FirebaseSessionSPDAO.getUid(TravelsActivity.this);
+//
+//                        TravelMemLocalCacheDAO.deleteTravel(TravelsActivity.this, uid, id);
                     }
                 });
 
@@ -145,33 +165,35 @@ public class TravelsActivity extends AppCompatActivity {
                     @Override
                     public void onTravelCreate(final Travel travel) {
                         travel.setCreationTime(System.currentTimeMillis());
+
+                        travelsViewModel.addTravel(uid, token, travel);
                         travelsAdapter.addTravel(travel);
 
-                        Call<FirebasePOSTResponse> addTravelCall = TravelMemAPIDAO.apiService.addTravel(
-                                FirebaseSessionSPDAO.getUid(TravelsActivity.this),
-                                FirebaseSessionSPDAO.getIdToken(TravelsActivity.this),
-                                travel
-                        );
-
-                        // NOTE: if this fails. SyncService will take care of it
-                        addTravelCall.enqueue(new Callback<FirebasePOSTResponse>() {
-                            @Override
-                            public void onResponse(Call<FirebasePOSTResponse> call, Response<FirebasePOSTResponse> response) {
-                                if (response.isSuccessful() && response.body() != null) {
-                                    travel.setId(response.body().name);
-
-                                    String uid = FirebaseSessionSPDAO.getUid(TravelsActivity.this);
-
-                                    // update travel local cache
-                                    TravelMemLocalCacheDAO.addTravel(TravelsActivity.this, uid, travel);
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(Call<FirebasePOSTResponse> call, Throwable t) {
-
-                            }
-                        });
+//                        Call<FirebasePOSTResponse> addTravelCall = TravelMemAPIDAO.apiService.addTravel(
+//                                FirebaseSessionSPDAO.getUid(TravelsActivity.this),
+//                                FirebaseSessionSPDAO.getIdToken(TravelsActivity.this),
+//                                travel
+//                        );
+//
+//                        // NOTE: if this fails. SyncService will take care of it
+//                        addTravelCall.enqueue(new Callback<FirebasePOSTResponse>() {
+//                            @Override
+//                            public void onResponse(Call<FirebasePOSTResponse> call, Response<FirebasePOSTResponse> response) {
+//                                if (response.isSuccessful() && response.body() != null) {
+//                                    travel.setId(response.body().name);
+//
+//                                    String uid = FirebaseSessionSPDAO.getUid(TravelsActivity.this);
+//
+//                                    // update travel local cache
+//                                    TravelMemLocalCacheDAO.addTravel(TravelsActivity.this, uid, travel);
+//                                }
+//                            }
+//
+//                            @Override
+//                            public void onFailure(Call<FirebasePOSTResponse> call, Throwable t) {
+//
+//                            }
+//                        });
 
                         // can't update cache because there's still no id
                     }
@@ -185,34 +207,6 @@ public class TravelsActivity extends AppCompatActivity {
         });
 
         //requestTravels();
-
-        TravelsViewModel travelsViewModel = ViewModelProviders.of(this).get(TravelsViewModel.class);
-
-        String uid = FirebaseSessionSPDAO.getUid(this);
-        if (uid == null) {
-            LoginActivity.start(this);
-            finish();
-            return;
-        }
-
-        String token = FirebaseSessionSPDAO.getIdToken(this);
-        if (token == null) {
-            LoginActivity.start(this);
-            finish();
-            return;
-        }
-
-        // travels observer
-        travelsViewModel.getTravelsLiveData(this, uid, token).observe(this, new Observer<ArrayList<Travel>>() {
-            @Override
-            public void onChanged(@Nullable ArrayList<Travel> travels) {
-                if (travels == null) {
-                    return;
-                }
-
-                travelsAdapter.setTravels(travels);
-            }
-        });
     }
 
     private void requestTravels() {
