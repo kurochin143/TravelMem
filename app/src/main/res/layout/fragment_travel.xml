@@ -25,7 +25,8 @@
                 android:id="@+id/f_travel_b_view_on_map"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="View On Map" />
+                android:text="View On Map"
+                android:backgroundTint="@color/commonButtonColor"/>
 
             <ViewSwitcher
                 android:id="@+id/f_travel_vs_name"
@@ -89,19 +90,22 @@
                 android:id="@+id/f_travel_b_route"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Route" />
+                android:text="Route"
+                android:backgroundTint="@color/commonButtonColor"/>
 
             <Button
                 android:id="@+id/f_travel_b_images"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Images" />
+                android:text="Images"
+                android:backgroundTint="@color/commonButtonColor"/>
 
             <Button
                 android:id="@+id/f_travel_b_videos"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Videos" />
+                android:text="Videos"
+                android:backgroundTint="@color/commonButtonColor"/>
 
             <TextView
                 android:id="@+id/f_travel_t_created_date"
@@ -155,7 +159,8 @@
                 android:text="Delete"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                android:backgroundTint="@color/deleteButtonColor"/>
 
             <Button
                 android:id="@+id/f_travel_b_creating_save"
@@ -164,7 +169,7 @@
                 android:text="Save"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginStart="50dp"/>
+                android:backgroundTint="@color/commonButtonColor"/>
 
             <Button
                 android:id="@+id/f_travel_b_creating_cancel"
@@ -173,7 +178,7 @@
                 android:text="Cancel"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginEnd="50dp" />
+                android:backgroundTint="@color/commonButtonColor" />
 
         </android.support.constraint.ConstraintLayout>
 

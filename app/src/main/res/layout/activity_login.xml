@@ -30,7 +30,8 @@
             android:id="@+id/a_login_btn_sign_in"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sign in"/>
+            android:text="Sign in"
+            android:backgroundTint="@color/commonButtonColor"/>
 
         <Button
             android:id="@+id/a_login_btn_register"
@@ -38,7 +39,8 @@
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:text="Register"/>
+            android:text="Register"
+            android:backgroundTint="@color/commonButtonColor"/>
 
     </LinearLayout>
 
