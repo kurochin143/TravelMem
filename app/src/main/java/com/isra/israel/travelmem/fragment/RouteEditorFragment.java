@@ -127,42 +127,6 @@ public class RouteEditorFragment extends Fragment {
             }
         });
 
-        // origin google places
-        AutocompleteSupportFragment originAutocompleteSupportFragment = (AutocompleteSupportFragment) getChildFragmentManager().findFragmentById(R.id.f_route_editor_f_autocomplete_origin);
-        originAutocompleteSupportFragment.setPlaceFields(Arrays.asList(Place.Field.ADDRESS, Place.Field.LAT_LNG));
-        originAutocompleteSupportFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
-            public void onPlaceSelected(@NonNull Place place) {
-                origin.setName(place.getAddress());
-                origin.setLatLng(place.getLatLng());
-
-                requestDirection();
-            }
-
-            @Override
-            public void onError(@NonNull Status status) {
-
-            }
-        });
-
-        // destination google places
-        AutocompleteSupportFragment destinationAutocompleteSupportFragment = (AutocompleteSupportFragment) getChildFragmentManager().findFragmentById(R.id.f_route_editor_f_autocomplete_destination);
-        destinationAutocompleteSupportFragment.setPlaceFields(Arrays.asList(Place.Field.ADDRESS, Place.Field.LAT_LNG));
-        destinationAutocompleteSupportFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
-            public void onPlaceSelected(@NonNull Place place) {
-                destination.setName(place.getAddress());
-                destination.setLatLng(place.getLatLng());
-
-                requestDirection();
-            }
-
-            @Override
-            public void onError(@NonNull Status status) {
-
-            }
-        });
-
         // origin search
         view.findViewById(R.id.f_route_editor_ib_search_origin).setOnClickListener(new View.OnClickListener() {
             @Override

@@ -25,29 +25,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
-                <fragment
-                    android:id="@+id/f_route_editor_f_autocomplete_origin"
-                    android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <fragment
-                    android:id="@+id/f_route_editor_f_autocomplete_destination"
-                    android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/f_route_editor_f_autocomplete_origin" />
-
                 <ImageButton
                     android:id="@+id/f_route_editor_ib_search_origin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_place_32dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:backgroundTint="@color/commonButtonColor"/>
 
                 <ImageButton
                     android:id="@+id/f_route_editor_ib_search_destination"
@@ -55,7 +40,8 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_flag_32dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/f_route_editor_ib_search_origin" />
+                    app:layout_constraintTop_toBottomOf="@+id/f_route_editor_ib_search_origin"
+                    android:backgroundTint="@color/commonButtonColor"/>
 
             </android.support.constraint.ConstraintLayout>
 
