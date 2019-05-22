@@ -38,7 +38,7 @@
                     android:id="@+id/f_travel_t_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Name"
+                    android:hint="@string/name"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     android:textColor="@color/commonTextColor"/>
@@ -49,7 +49,7 @@
                     android:layout_height="wrap_content"
                     android:inputType="text"
                     android:imeOptions="actionDone"
-                    android:hint="Edit Text"
+                    android:hint="@string/name"
                     android:textSize="20sp"
                     android:textColor="@color/commonTextColor"/>
 
@@ -133,7 +133,7 @@
                         android:id="@+id/f_travel_t_description"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Description"
+                        android:hint="@string/description"
                         android:textSize="15sp"
                         android:textColor="@color/commonTextColor"/>
 
@@ -143,7 +143,7 @@
                         android:layout_height="wrap_content"
                         android:inputType="text"
                         android:imeOptions="actionDone"
-                        android:hint="Description"
+                        android:hint="@string/description"
                         android:textColor="@color/commonTextColor"/>
 
                 </ViewSwitcher>

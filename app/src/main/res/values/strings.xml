@@ -10,4 +10,16 @@
     <string name="videos">Videos</string>
     <string name="route">Route</string>
     <string name="images">Images</string>
+    <string name="accept">Accept</string>
+    <string name="select_video">Select Video</string>
+    <string name="latitude">Latitude</string>
+    <string name="longitude">Longitude</string>
+    <string name="description">Description</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="register">Register</string>
+    <string name="name">Name</string>
+    <string name="add_video">Add Video</string>
 </resources>

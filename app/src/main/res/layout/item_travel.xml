@@ -14,21 +14,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Travel Name"
-            android:textColor="@color/commonTextColor"/>
+            android:textColor="@color/commonTextColor"
+            android:textSize="30sp"/>
 
         <TextView
             android:id="@+id/i_travel_t_start_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Start Date"
-            android:textColor="@color/commonTextColor"/>
+            android:textColor="@color/commonTextColor"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/i_travel_t_end_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="End Date"
-            android:textColor="@color/commonTextColor"/>
+            android:textColor="@color/commonTextColor"
+            android:visibility="gone"/>
 
     </LinearLayout>
 
