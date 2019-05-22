@@ -31,7 +31,8 @@
                 android:id="@+id/f_travel_image_t_location"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Chicago"/>
+                android:text="Chicago"
+                android:textColor="@color/commonTextColor"/>
 
             <ScrollView
                 android:layout_width="match_parent"
@@ -46,14 +47,16 @@
                         android:id="@+id/f_travel_image_t_description"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Description"/>
+                        android:text="Description"
+                        android:textColor="@color/commonTextColor"/>
 
                     <EditText
                         android:id="@+id/f_travel_image_et_description"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Description Edit Text"
-                        android:imeOptions="actionDone" />
+                        android:imeOptions="actionDone"
+                        android:textColor="@color/commonTextColor"/>
 
                 </ViewSwitcher>
 

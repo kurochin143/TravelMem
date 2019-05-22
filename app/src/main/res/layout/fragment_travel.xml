@@ -38,7 +38,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Name"
-                    android:textSize="20sp"/>
+                    android:textSize="20sp"
+                    android:textColor="@color/commonTextColor"/>
 
                 <EditText
                     android:id="@+id/f_travel_et_name"
@@ -47,7 +48,8 @@
                     android:inputType="text"
                     android:imeOptions="actionDone"
                     android:text="Edit Text"
-                    android:textSize="20sp"/>
+                    android:textSize="20sp"
+                    android:textColor="@color/commonTextColor"/>
 
             </ViewSwitcher>
 
@@ -56,28 +58,32 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Start Date"
-                android:textSize="20sp"/>
+                android:textSize="20sp"
+                android:textColor="@color/commonTextColor"/>
 
             <TextView
                 android:id="@+id/f_travel_t_end_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="End Date"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:textColor="@color/commonTextColor"/>
 
             <TextView
                 android:id="@+id/f_travel_t_origin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Origin"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:textColor="@color/commonTextColor"/>
 
             <TextView
                 android:id="@+id/f_travel_t_destination"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Destination"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:textColor="@color/commonTextColor"/>
 
             <Button
                 android:id="@+id/f_travel_b_route"
@@ -102,7 +108,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="00/00/0000"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:textColor="@color/commonTextColor"/>
 
             <ScrollView
                 android:layout_width="match_parent"
@@ -117,7 +124,8 @@
                         android:id="@+id/f_travel_t_description"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Description" />
+                        android:text="Description"
+                        android:textColor="@color/commonTextColor"/>
 
                     <EditText
                         android:id="@+id/f_travel_et_description"
@@ -125,7 +133,8 @@
                         android:layout_height="wrap_content"
                         android:inputType="text"
                         android:imeOptions="actionDone"
-                        android:text="Edit Text" />
+                        android:text="Edit Text"
+                        android:textColor="@color/commonTextColor"/>
 
                 </ViewSwitcher>
 
