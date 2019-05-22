@@ -1,6 +1,5 @@
 package com.isra.israel.travelmem.fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.TypedValue;
@@ -223,7 +222,7 @@ public class TravelFragment extends Fragment {
         });
 
         // images fragment
-        view.findViewById(R.id.f_travel_b_view_images).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.f_travel_b_images).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 TravelImagesFragment travelImagesFragment = TravelImagesFragment.newInstance(travel.getImages());
@@ -246,7 +245,7 @@ public class TravelFragment extends Fragment {
         });
 
         // videos fragment
-        view.findViewById(R.id.f_travel_b_view_videos).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.f_travel_b_videos).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 TravelVideosFragment travelVideosFragment = TravelVideosFragment.newInstance(travel.getVideos());
