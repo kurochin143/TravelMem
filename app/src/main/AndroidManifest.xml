@@ -23,7 +23,8 @@
 
         <activity android:name=".activity.TestContextActivity" />
         <activity android:name=".activity.LoginActivity" />
-        <activity android:name=".activity.TravelsActivity" />
+        <activity android:name=".activity.TravelsActivity"
+            android:windowSoftInputMode="adjustPan"/>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

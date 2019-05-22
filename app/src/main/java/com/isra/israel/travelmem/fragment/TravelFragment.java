@@ -7,9 +7,11 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
 import com.isra.israel.travelmem.R;
 import com.isra.israel.travelmem.model.Travel;
@@ -139,40 +141,38 @@ public class TravelFragment extends Fragment {
         }
 
         // name
+        final ViewSwitcher nameViewSwitcher = view.findViewById(R.id.f_travel_vs_name);
         final TextView nameTextView = view.findViewById(R.id.f_travel_t_name);
         nameTextView.setText(travel.getName());
+        final EditText nameEditText = view.findViewById(R.id.f_travel_et_name);
         nameTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                nameTextView.setVisibility(View.GONE);
-                final EditText nameEditText = new EditText(getContext());
-                nameEditText.setTextSize(TypedValue.COMPLEX_UNIT_SP, nameTextView.getTextSize());
-                nameEditText.setLayoutParams(nameTextView.getLayoutParams());
-                nameEditText.setMaxLines(1);
-                nameEditText.setImeActionLabel("enter", KeyEvent.KEYCODE_ENTER);
-                nameEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-                    @Override
-                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                nameViewSwitcher.showNext();
+                nameEditText.setText(nameTextView.getText());
+                nameEditText.requestFocus();
+            }
+        });
+        nameEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    nameViewSwitcher.showPrevious();
+                    nameTextView.setText(nameEditText.getText().toString());
 
-                        ((ViewGroup)nameEditText.getParent()).removeView(nameEditText);
-                        nameTextView.setVisibility(View.VISIBLE);
-                        nameTextView.setText(nameEditText.getText());
-                        travel.setName(nameTextView.getText().toString());
+                    travel.setName(nameTextView.getText().toString());
 
-                        if (onTravelEditListener != null) {
-                            onTravelEditListener.onTravelEdit(travel);
-                        }
-
-                        return true;
+                    if (onTravelEditListener != null) {
+                        onTravelEditListener.onTravelEdit(travel);
                     }
-                });
+                }
 
-                ViewGroup viewGroup = (ViewGroup)nameTextView.getParent();
-                viewGroup.addView(nameEditText, viewGroup.indexOfChild(nameTextView));
+                return true;
             }
         });
 
-        // TODO edit date
+        // TODO ON HOLD date, may be unimplemented
+        // TODO edit date with that timer spinning thing
         // start date
         TextView startDateTextView = view.findViewById(R.id.f_travel_t_start_date);
         startDateTextView.setText(travel.getStartDate());
@@ -264,6 +264,37 @@ public class TravelFragment extends Fragment {
                         .add(R.id.f_travel_fl_root, travelVideosFragment)
                         .addToBackStack(null)
                         .commit();
+            }
+        });
+
+        // description
+        final ViewSwitcher descriptionViewSwitcher = view.findViewById(R.id.f_travel_vs_description);
+        final TextView descriptionTextView = view.findViewById(R.id.f_travel_t_description);
+        descriptionTextView.setText(travel.getDescription());
+        final EditText descriptionEditText = view.findViewById(R.id.f_travel_et_description);
+        descriptionTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                descriptionViewSwitcher.showNext();
+                descriptionEditText.setText(descriptionTextView.getText());
+                descriptionEditText.requestFocus();
+            }
+        });
+        descriptionEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    descriptionViewSwitcher.showPrevious();
+                    descriptionTextView.setText(descriptionEditText.getText().toString());
+
+                    travel.setDescription(descriptionTextView.getText().toString());
+
+                    if (onTravelEditListener != null) {
+                        onTravelEditListener.onTravelEdit(travel);
+                    }
+                }
+
+                return true;
             }
         });
 

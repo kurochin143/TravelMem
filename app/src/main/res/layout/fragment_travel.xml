@@ -27,19 +27,36 @@
                 android:layout_height="wrap_content"
                 android:text="View On Map" />
 
-            <TextView
-                android:id="@+id/f_travel_t_name"
+            <ViewSwitcher
+                android:id="@+id/f_travel_vs_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Travel Name"
-                android:textSize="20sp" />
+                android:measureAllChildren="false">
+
+                <TextView
+                    android:id="@+id/f_travel_t_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Name"
+                    android:textSize="20sp"/>
+
+                <EditText
+                    android:id="@+id/f_travel_et_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:imeOptions="actionDone"
+                    android:text="Edit Text"
+                    android:textSize="20sp"/>
+
+            </ViewSwitcher>
 
             <TextView
                 android:id="@+id/f_travel_t_start_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Start Date"
-                android:textSize="20sp" />
+                android:textSize="20sp"/>
 
             <TextView
                 android:id="@+id/f_travel_t_end_date"
@@ -106,8 +123,9 @@
                         android:id="@+id/f_travel_et_description"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:inputType="text"
                         android:imeOptions="actionDone"
-                        android:text="Description Edit Text" />
+                        android:text="Edit Text" />
 
                 </ViewSwitcher>
 
