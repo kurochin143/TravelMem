@@ -19,6 +19,8 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/a_travels_b_add_travel"/>
 
+        <!--TODO use floating button-->
+
         <Button
             android:id="@+id/a_travels_b_add_travel"
             android:layout_width="match_parent"

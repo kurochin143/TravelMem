@@ -30,6 +30,7 @@ import com.isra.israel.travelmem.model.Travel;
 import com.isra.israel.travelmem.model.TravelImage;
 import com.isra.israel.travelmem.model.TravelVideo;
 import com.isra.israel.travelmem.model.directions.Leg;
+import com.isra.israel.travelmem.model.directions.Point;
 import com.isra.israel.travelmem.model.directions.Route;
 import com.isra.israel.travelmem.model.directions.Step;
 import com.isra.israel.travelmem.static_helpers.BitmapStaticHelper;
@@ -169,25 +170,14 @@ public class TravelMapViewFragment extends Fragment {
 
                 // add travel video marker
                 if (travel.getVideos() != null) {
-                    for (final TravelVideo travelVideo : travel.getVideos()) {
+                    for (TravelVideo travelVideo : travel.getVideos()) {
                         if (travelVideo.getUriStr() != null && travelVideo.getLocation() != null && travelVideo.getLocation().getLatLng() != null) {
-                            Bitmap bitmap = VideoStaticHelper.getFrameAtHalf(getContext(), travelVideo.getUri());
-                            Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, 100, 100, false);
-                            final Marker marker = googleMap.addMarker(new MarkerOptions()
-                                    .icon(BitmapDescriptorFactory.fromBitmap(scaledBitmap))
-                                    .position(travelVideo.getLocation().getLatLng())
-                            );
-
-                            marker.setTag(travelVideo);
-
-                            markers.add(marker);
+                            addTravelVideoMarker(travelVideo);
                         }
                     }
                 }
 
-                // add origin end marker
-
-
+                // marker click
                 googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
@@ -235,10 +225,51 @@ public class TravelMapViewFragment extends Fragment {
                         return true;
                     }
                 });
+
+                // long click
+                googleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+                    @Override
+                    public void onMapLongClick(LatLng latLng) {
+                        // open add video fragment
+                        Point location = new Point();
+                        location.setLatLng(latLng);
+                        final AddTravelVideoFragment addTravelVideoFragment = AddTravelVideoFragment.newInstance(location);
+                        addTravelVideoFragment.setOnTravelVideoAddListener(new AddTravelVideoFragment.OnTravelVideoAddListener() {
+                            @Override
+                            public void onTravelVideoAdd(TravelVideo travelVideo) {
+                                if (travelVideo != null) {
+                                    travel.getVideos().add(travelVideo);
+
+                                    addTravelVideoMarker(travelVideo);
+
+                                    onTravelEditListener.onTravelEdit(travel);
+                                }
+                            }
+                        });
+
+                        getActivity().getSupportFragmentManager().beginTransaction()
+                                .add(R.id.f_travel_map_view_c_root, addTravelVideoFragment)
+                                .addToBackStack(null)
+                                .commit();
+                    }
+                });
             }
         });
 
         return view;
+    }
+
+    private void addTravelVideoMarker(final TravelVideo travelVideo) {
+        Bitmap bitmap = VideoStaticHelper.getFrameAtHalf(getContext(), travelVideo.getUri());
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, 100, 100, false);
+        final Marker marker = googleMap.addMarker(new MarkerOptions()
+                .icon(BitmapDescriptorFactory.fromBitmap(scaledBitmap))
+                .position(travelVideo.getLocation().getLatLng())
+        );
+
+        marker.setTag(travelVideo);
+
+        markers.add(marker);
     }
 
     public void setOnTravelEditListener(OnTravelEditListener l) {

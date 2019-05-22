@@ -25,7 +25,7 @@
                 android:id="@+id/f_travel_b_view_on_map"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="View On Map"
+                android:text="@string/view_on_map"
                 android:backgroundTint="@color/commonButtonColor"/>
 
             <ViewSwitcher
@@ -40,6 +40,7 @@
                     android:layout_height="wrap_content"
                     android:hint="Name"
                     android:textSize="20sp"
+                    android:textStyle="bold"
                     android:textColor="@color/commonTextColor"/>
 
                 <EditText
@@ -60,7 +61,8 @@
                 android:layout_height="wrap_content"
                 android:hint="Start Date"
                 android:textSize="20sp"
-                android:textColor="@color/commonTextColor"/>
+                android:textColor="@color/commonTextColor"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/f_travel_t_end_date"
@@ -68,7 +70,8 @@
                 android:layout_height="wrap_content"
                 android:hint="End Date"
                 android:textSize="20sp"
-                android:textColor="@color/commonTextColor"/>
+                android:textColor="@color/commonTextColor"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/f_travel_t_origin"
@@ -90,21 +93,22 @@
                 android:id="@+id/f_travel_b_route"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Route"
+                android:text="@string/route"
                 android:backgroundTint="@color/commonButtonColor"/>
 
             <Button
                 android:id="@+id/f_travel_b_images"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Images"
-                android:backgroundTint="@color/commonButtonColor"/>
+                android:text="@string/images"
+                android:backgroundTint="@color/commonButtonColor"
+                android:visibility="gone"/>
 
             <Button
                 android:id="@+id/f_travel_b_videos"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Videos"
+                android:text="@string/videos"
                 android:backgroundTint="@color/commonButtonColor"/>
 
             <TextView
@@ -113,7 +117,8 @@
                 android:layout_height="wrap_content"
                 android:text="00/00/0000"
                 android:textSize="20sp"
-                android:textColor="@color/commonTextColor"/>
+                android:textColor="@color/commonTextColor"
+                android:visibility="gone"/>
 
             <ScrollView
                 android:layout_width="match_parent"
@@ -157,7 +162,7 @@
                 android:id="@+id/f_travel_b_delete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Delete"
+                android:text="@string/delete"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -167,7 +172,7 @@
                 android:id="@+id/f_travel_b_creating_save"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Save"
+                android:text="@string/save"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 android:backgroundTint="@color/commonButtonColor"/>
@@ -176,7 +181,7 @@
                 android:id="@+id/f_travel_b_creating_cancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Cancel"
+                android:text="@string/cancel"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:backgroundTint="@color/commonButtonColor" />
