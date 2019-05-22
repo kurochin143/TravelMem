@@ -5,6 +5,6 @@
     <color name="colorAccent">#fdcb6e</color>
 
     <color name="commonTextColor">#000000</color>
-    <color name="commonButtonColor">#fdcb6e</color>
+    <color name="commonButtonColor">#fff3b1</color>
     <color name="deleteButtonColor">#FF2222</color>
 </resources>

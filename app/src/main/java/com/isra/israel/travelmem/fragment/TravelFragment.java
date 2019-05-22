@@ -184,13 +184,21 @@ public class TravelFragment extends Fragment {
         // origin
         final TextView originTextView = view.findViewById(R.id.f_travel_t_origin);
         if (travel.getOrigin() != null) {
-            originTextView.setText(travel.getOrigin().getName());
+            String originStr = "From: ";
+            if (travel.getOrigin().getName() != null) {
+                originStr += travel.getOrigin().getName();
+            }
+            originTextView.setText(originStr);
         }
 
         // destination
         final TextView destinationTextView = view.findViewById(R.id.f_travel_t_destination);
         if (travel.getDestination() != null) {
-            destinationTextView.setText(travel.getDestination().getName());
+            String destinationStr = "To: ";
+            if (travel.getDestination().getName() != null) {
+                destinationStr += travel.getDestination().getName();
+            }
+            destinationTextView.setText(destinationStr);
         }
 
         // route fragment
