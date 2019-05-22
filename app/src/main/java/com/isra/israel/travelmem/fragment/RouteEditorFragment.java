@@ -1,5 +1,6 @@
 package com.isra.israel.travelmem.fragment;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -27,8 +28,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.internal.ee;
+import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.maps.android.PolyUtil;
 import com.google.maps.android.ui.IconGenerator;
 import com.isra.israel.travelmem.R;
@@ -53,6 +57,8 @@ public class RouteEditorFragment extends Fragment {
     private static final String ARG_ROUTE = "route";
     private static final String ARG_ORIGIN = "origin";
     private static final String ARG_DESTINATION = "destination";
+    public static final int RC_SEARCH_ORIGIN = 1;
+    public static final int RC_SEARCH_DESTINATION = 2;
 
     private ArrayList<Route> routes;
     private Route route;
@@ -63,6 +69,11 @@ public class RouteEditorFragment extends Fragment {
     private Point origin;
     private Point destination;
     private Call<GoogleDirectionsResult> getDirectionCall;
+    private static final List<Place.Field> fields = new ArrayList<>();
+    static {
+        fields.add(Place.Field.ADDRESS);
+        fields.add(Place.Field.LAT_LNG);
+    }
 
     private OnRouteEditListener onRouteEditListener;
 
@@ -116,7 +127,6 @@ public class RouteEditorFragment extends Fragment {
             }
         });
 
-
         // origin google places
         AutocompleteSupportFragment originAutocompleteSupportFragment = (AutocompleteSupportFragment) getChildFragmentManager().findFragmentById(R.id.f_route_editor_f_autocomplete_origin);
         originAutocompleteSupportFragment.setPlaceFields(Arrays.asList(Place.Field.ADDRESS, Place.Field.LAT_LNG));
@@ -153,7 +163,48 @@ public class RouteEditorFragment extends Fragment {
             }
         });
 
+        // origin search
+        view.findViewById(R.id.f_route_editor_ib_search_origin).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = (new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)).a(ee.a).build(getActivity());
+                startActivityForResult(intent, RC_SEARCH_ORIGIN);
+            }
+        });
+
+        // destination search
+        view.findViewById(R.id.f_route_editor_ib_search_destination).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = (new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)).a(ee.a).build(getActivity());
+                startActivityForResult(intent, RC_SEARCH_DESTINATION);
+            }
+        });
+
         return view;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+
+        if (resultCode == -1) {
+            if (requestCode == RC_SEARCH_ORIGIN) {
+                Place place = Autocomplete.getPlaceFromIntent(intent);
+                origin.setName(place.getAddress());
+                origin.setLatLng(place.getLatLng());
+
+                requestDirection();
+            } else if (requestCode == RC_SEARCH_DESTINATION) {
+                Place place = Autocomplete.getPlaceFromIntent(intent);
+
+                destination.setName(place.getAddress());
+                destination.setLatLng(place.getLatLng());
+
+                requestDirection();
+            }
+        }
+
     }
 
     private void requestDirection() {
