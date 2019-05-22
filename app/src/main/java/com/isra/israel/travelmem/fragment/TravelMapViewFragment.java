@@ -221,6 +221,7 @@ public class TravelMapViewFragment extends Fragment {
                                         });
                                         getActivity().getSupportFragmentManager().beginTransaction()
                                                 .add(R.id.f_travel_map_view_c_root, travelVideoFragment)
+                                                .addToBackStack(null)
                                                 .commit();
 
                                         break;
