@@ -1,5 +1,6 @@
 package com.isra.israel.travelmem.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -138,5 +139,10 @@ public class LoginActivity extends AppCompatActivity {
                 task.getException().printStackTrace();
             }
         }
+    }
+
+    public static void start(Context context) {
+        Intent intent = new Intent(context, LoginActivity.class);
+        context.startActivity(intent);
     }
 }

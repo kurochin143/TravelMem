@@ -1,5 +1,8 @@
 package com.isra.israel.travelmem.activity;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,6 +19,7 @@ import com.isra.israel.travelmem.dao.TravelMemLocalCacheDAO;
 import com.isra.israel.travelmem.fragment.TravelFragment;
 import com.isra.israel.travelmem.model.FirebasePOSTResponse;
 import com.isra.israel.travelmem.model.Travel;
+import com.isra.israel.travelmem.view_model.TravelsViewModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -180,8 +184,35 @@ public class TravelsActivity extends AppCompatActivity {
             }
         });
 
-        requestTravels();
+        //requestTravels();
 
+        TravelsViewModel travelsViewModel = ViewModelProviders.of(this).get(TravelsViewModel.class);
+
+        String uid = FirebaseSessionSPDAO.getUid(this);
+        if (uid == null) {
+            LoginActivity.start(this);
+            finish();
+            return;
+        }
+
+        String token = FirebaseSessionSPDAO.getIdToken(this);
+        if (token == null) {
+            LoginActivity.start(this);
+            finish();
+            return;
+        }
+
+        // travels observer
+        travelsViewModel.getTravelsLiveData(this, uid, token).observe(this, new Observer<ArrayList<Travel>>() {
+            @Override
+            public void onChanged(@Nullable ArrayList<Travel> travels) {
+                if (travels == null) {
+                    return;
+                }
+
+                travelsAdapter.setTravels(travels);
+            }
+        });
     }
 
     private void requestTravels() {
