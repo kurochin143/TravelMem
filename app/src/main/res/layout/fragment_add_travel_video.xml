@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragment.AddTravelVideoFragment"
+    android:background="#FFFFFF"
+    android:clickable="true"
+    android:padding="15dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/f_add_travel_video_c_0">
+
+        <TextView
+            android:id="@+id/f_add_travel_video_t_video"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Video"
+            android:textSize="15sp"
+            android:maxLines="1"/>
+        <Button
+            android:id="@+id/f_add_travel_video_b_set_video"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Set Video"
+            android:backgroundTint="@color/commonButtonColor"/>
+
+        <EditText
+            android:id="@+id/f_add_travel_video_et_latitude"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Latitude"
+            android:textColor="@color/commonTextColor"/>
+
+        <EditText
+            android:id="@+id/f_add_travel_video_et_longitude"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Longitude"
+            android:textColor="@color/commonTextColor"/>
+
+        <EditText
+            android:id="@+id/f_add_travel_video_et_description"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="Description"
+            android:textColor="@color/commonTextColor"
+            android:gravity="start"/>
+
+    </LinearLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/f_add_travel_video_c_0"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <Button
+            android:id="@+id/f_add_travel_video_b_accept"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Accept"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:backgroundTint="@color/commonButtonColor"/>
+
+        <Button
+            android:id="@+id/f_add_travel_video_b_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:backgroundTint="@color/commonButtonColor" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.constraint.ConstraintLayout>

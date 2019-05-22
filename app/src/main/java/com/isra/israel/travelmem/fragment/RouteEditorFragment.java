@@ -36,6 +36,7 @@ import com.isra.israel.travelmem.model.directions.Leg;
 import com.isra.israel.travelmem.model.directions.Point;
 import com.isra.israel.travelmem.model.directions.Route;
 import com.isra.israel.travelmem.model.directions.Step;
+import com.isra.israel.travelmem.static_helpers.BitmapStaticHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -250,30 +251,26 @@ public class RouteEditorFragment extends Fragment {
 
         polylines.add(googleMap.addPolyline(polylineOptions));
 
+        if (route.getLegs().size() != 0) {
+            Leg leg0 = route.getLegs().get(0);
+            LatLng origin = leg0.getStartLocation();
+            Leg legLast = route.getLegs().get(route.getLegs().size() - 1);
+            LatLng destination = legLast.getEndLocation();
 
-        Bitmap originMarkerBitmap = getBitmap((VectorDrawable) getContext().getResources().getDrawable(R.drawable.ic_place_32dp));
+            Bitmap originMarkerBitmap = BitmapStaticHelper.getBitmap((VectorDrawable) getContext().getResources().getDrawable(R.drawable.ic_place_32dp));
 
-        originMarker = googleMap.addMarker(new MarkerOptions()
-                .position(origin.getLatLng())
-                .icon(BitmapDescriptorFactory.fromBitmap(originMarkerBitmap))
-        );
+            originMarker = googleMap.addMarker(new MarkerOptions()
+                    .position(origin)
+                    .icon(BitmapDescriptorFactory.fromBitmap(originMarkerBitmap))
+            );
 
-        Bitmap destinationMarkerBitmap = getBitmap((VectorDrawable) getContext().getResources().getDrawable(R.drawable.ic_flag_32dp));
+            Bitmap destinationMarkerBitmap = BitmapStaticHelper.getBitmap((VectorDrawable) getContext().getResources().getDrawable(R.drawable.ic_flag_32dp));
 
-        destinationMarker = googleMap.addMarker(new MarkerOptions()
-                .position(destination.getLatLng())
-                .icon(BitmapDescriptorFactory.fromBitmap(destinationMarkerBitmap))
-        );
-
-    }
-
-    private static Bitmap getBitmap(VectorDrawable vectorDrawable) {
-        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(),
-                vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        vectorDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        vectorDrawable.draw(canvas);
-        return bitmap;
+            destinationMarker = googleMap.addMarker(new MarkerOptions()
+                    .position(destination)
+                    .icon(BitmapDescriptorFactory.fromBitmap(destinationMarkerBitmap))
+            );
+        }
     }
 
     public void setOnRouteEditListener(OnRouteEditListener onRouteEditedListener) {

@@ -3,6 +3,7 @@ package com.isra.israel.travelmem.fragment;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.VectorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -31,6 +32,7 @@ import com.isra.israel.travelmem.model.TravelVideo;
 import com.isra.israel.travelmem.model.directions.Leg;
 import com.isra.israel.travelmem.model.directions.Route;
 import com.isra.israel.travelmem.model.directions.Step;
+import com.isra.israel.travelmem.static_helpers.BitmapStaticHelper;
 import com.isra.israel.travelmem.static_helpers.VideoStaticHelper;
 
 import java.io.IOException;
@@ -93,20 +95,46 @@ public class TravelMapViewFragment extends Fragment {
 //                            .include(route.getBounds().getSouthWest())
 //                            .build());
 
-                    //googleMap.moveCamera(CameraUpdateFactory.newLatLng(route.getBounds().getNorthEast()));
+                    if (route.getBounds() != null && route.getBounds().getSouthWest() != null && route.getBounds().getNorthEast() != null) {
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(
+                                new LatLngBounds(route.getBounds().getSouthWest(), route.getBounds().getNorthEast()), 0));
+                    }
 
                     ArrayList<PolylineOptions> polylineOptionsList = new ArrayList<>();
                     ArrayList<CircleOptions> circleOptionsList = new ArrayList<>();
 
-                    for (Leg leg : route.getLegs()) {
-                        PolylineOptions polylineOptions = new PolylineOptions();
-                        polylineOptions.color(Color.BLUE);
-                        polylineOptionsList.add(polylineOptions);
+                    if (route.getLegs() != null) {
+                        if (route.getLegs().size() != 0) {
+                            Leg leg0 = route.getLegs().get(0);
+                            LatLng origin = leg0.getStartLocation();
+                            Leg legLast = route.getLegs().get(route.getLegs().size() - 1);
+                            LatLng destination = legLast.getEndLocation();
 
-                        for (Step step : leg.getSteps()) {
-                            List<LatLng> polylinePoints = PolyUtil.decode(step.getPolyline().getPoints());
-                            for (LatLng polylinePoint : polylinePoints) {
-                                polylineOptions.add(polylinePoint);
+                            Bitmap originMarkerBitmap = BitmapStaticHelper.getBitmap((VectorDrawable) getContext().getResources().getDrawable(R.drawable.ic_place_32dp));
+
+                            googleMap.addMarker(new MarkerOptions()
+                                    .position(origin)
+                                    .icon(BitmapDescriptorFactory.fromBitmap(originMarkerBitmap))
+                            );
+
+                            Bitmap destinationMarkerBitmap = BitmapStaticHelper.getBitmap((VectorDrawable) getContext().getResources().getDrawable(R.drawable.ic_flag_32dp));
+
+                            googleMap.addMarker(new MarkerOptions()
+                                    .position(destination)
+                                    .icon(BitmapDescriptorFactory.fromBitmap(destinationMarkerBitmap))
+                            );
+                        }
+
+                        for (Leg leg : route.getLegs()) {
+                            PolylineOptions polylineOptions = new PolylineOptions();
+                            polylineOptions.color(Color.BLUE);
+                            polylineOptionsList.add(polylineOptions);
+
+                            for (Step step : leg.getSteps()) {
+                                List<LatLng> polylinePoints = PolyUtil.decode(step.getPolyline().getPoints());
+                                for (LatLng polylinePoint : polylinePoints) {
+                                    polylineOptions.add(polylinePoint);
+                                }
                             }
                         }
                     }
@@ -156,6 +184,9 @@ public class TravelMapViewFragment extends Fragment {
                         }
                     }
                 }
+
+                // add origin end marker
+
 
                 googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override

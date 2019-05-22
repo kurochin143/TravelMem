@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".fragment.TravelVideosFragment"
     android:background="#FFFFFF"
-    android:id="@+id/f_travel_videos_fl_root">
+    android:id="@+id/f_travel_videos_fl_root"
+    android:clickable="true">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
