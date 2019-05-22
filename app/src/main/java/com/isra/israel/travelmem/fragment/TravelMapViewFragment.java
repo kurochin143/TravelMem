@@ -4,9 +4,9 @@ package com.isra.israel.travelmem.fragment;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.VectorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +24,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
-import com.google.maps.android.ui.IconGenerator;
 import com.isra.israel.travelmem.R;
 import com.isra.israel.travelmem.model.Travel;
 import com.isra.israel.travelmem.model.TravelImage;
@@ -56,7 +55,7 @@ public class TravelMapViewFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static TravelMapViewFragment newInstance(Travel travel) {
+    public static TravelMapViewFragment newInstance(@NonNull Travel travel) {
         TravelMapViewFragment fragment = new TravelMapViewFragment();
         Bundle args = new Bundle();
         args.putParcelable(ARG_TRAVEL, travel);
@@ -69,6 +68,10 @@ public class TravelMapViewFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             travel = getArguments().getParcelable(ARG_TRAVEL);
+            if (travel.getVideos() == null) {
+                travel.setVideos(new ArrayList<TravelVideo>());
+            }
+            // TODO HIGH remove non-existent file
         }
     }
 
@@ -90,12 +93,6 @@ public class TravelMapViewFragment extends Fragment {
 
                 // draw route
                 if (route != null) {
-                    // TODO MEDIUM lock and move/zoom camera to route
-//                    googleMap.setLatLngBoundsForCameraTarget(LatLngBounds.builder()
-//                            .include(route.getBounds().getNorthEast())
-//                            .include(route.getBounds().getSouthWest())
-//                            .build());
-
                     if (route.getBounds() != null && route.getBounds().getSouthWest() != null && route.getBounds().getNorthEast() != null) {
                         googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(
                                 new LatLngBounds(route.getBounds().getSouthWest(), route.getBounds().getNorthEast()), 0));
@@ -148,8 +145,6 @@ public class TravelMapViewFragment extends Fragment {
                         googleMap.addCircle(circleOptions);
                     }
                 }
-
-                // TODO HIGH remove non-existent file
 
                 // add travel image marker
                 if (travel.getImages() != null) {
@@ -210,7 +205,7 @@ public class TravelMapViewFragment extends Fragment {
                                             }
                                         });
                                         getActivity().getSupportFragmentManager().beginTransaction()
-                                                .add(R.id.f_travel_map_view_c_root, travelVideoFragment)
+                                                .add(R.id.f_travel_map_view_fl_root, travelVideoFragment)
                                                 .addToBackStack(null)
                                                 .commit();
 
@@ -248,7 +243,7 @@ public class TravelMapViewFragment extends Fragment {
                         });
 
                         getActivity().getSupportFragmentManager().beginTransaction()
-                                .add(R.id.f_travel_map_view_c_root, addTravelVideoFragment)
+                                .add(R.id.f_travel_map_view_fl_root, addTravelVideoFragment)
                                 .addToBackStack(null)
                                 .commit();
                     }

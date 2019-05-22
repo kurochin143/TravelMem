@@ -14,12 +14,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -203,10 +205,12 @@ public class RouteEditorFragment extends Fragment {
             polyline.remove();
         }
 
+        // clear origin marker
         if (originMarker != null) {
             originMarker.remove();
         }
 
+        // clear destination marker
         if (destinationMarker != null) {
             destinationMarker.remove();
         }
@@ -228,7 +232,13 @@ public class RouteEditorFragment extends Fragment {
         onRouteEditListener.onRouteEdit(route, origin, destination);
     }
 
-    private void drawRoute(Route route) {
+    private void drawRoute(@NonNull Route route) {
+
+        // move/zoom map
+        if (route.getBounds() != null && route.getBounds().getSouthWest() != null && route.getBounds().getNorthEast() != null) {
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(
+                    new LatLngBounds(route.getBounds().getSouthWest(), route.getBounds().getNorthEast()), 0));
+        }
 
         // TODO HIGH draw circle
         // TODO CRITICAL waypoints

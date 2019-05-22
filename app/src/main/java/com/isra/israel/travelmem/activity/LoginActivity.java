@@ -15,16 +15,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GetTokenResult;
 import com.isra.israel.travelmem.R;
-import com.isra.israel.travelmem.api.TravelMemAPIDAO;
 import com.isra.israel.travelmem.dao.FirebaseSessionSPDAO;
 import com.isra.israel.travelmem.fragment.RegisterFragment;
-import com.isra.israel.travelmem.model.Travel;
-
-import java.util.HashMap;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -51,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.a_login_c_root, new RegisterFragment())
+                        .add(R.id.a_login_fl_root, new RegisterFragment())
                         .addToBackStack(null)
                         .commit();
             }

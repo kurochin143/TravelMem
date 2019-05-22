@@ -5,12 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.TravelsActivity"
-    android:id="@+id/a_travels_fl_root"
-    android:padding="15dp">
+    android:id="@+id/a_travels_fl_root">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:padding="15dp">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/a_travels_r_travels"
