@@ -36,4 +36,8 @@ public class TravelsViewModel extends ViewModel {
         travelsRepository.removeTravel(uid, token, id);
     }
 
+    public void updateTravel(String uid, String token, Travel travel) {
+        travelsRepository.updateTravel(uid, token, travel);
+    }
+
 }

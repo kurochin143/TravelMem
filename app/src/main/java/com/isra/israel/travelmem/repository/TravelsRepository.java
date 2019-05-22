@@ -79,8 +79,6 @@ public class TravelsRepository {
 
                         // update travel local cache
                         TravelMemLocalCacheDAO.addTravel(context, uid, travel);
-
-                        // TODO update adapter
                     }
                 }
 
@@ -93,7 +91,7 @@ public class TravelsRepository {
             //can't update cache because there's still no id
     }
 
-    public void removeTravel(final String uid, String token, String id) {
+    public void removeTravel(String uid, String token, String id) {
         TravelMemAPIDAO.apiService.deleteTravel(
                 uid,
                 id,
@@ -111,6 +109,28 @@ public class TravelsRepository {
         });
 
         TravelMemLocalCacheDAO.deleteTravel(context, uid, id);
+    }
+
+    public void updateTravel(String uid, String token, Travel travel) {
+        TravelMemAPIDAO.apiService.updateTravel(
+                uid,
+                travel.getId(),
+                token,
+                travel
+        ).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
+
+        // update travel local cache
+        TravelMemLocalCacheDAO.updateTravel(context, uid, travel);
     }
 
 }
