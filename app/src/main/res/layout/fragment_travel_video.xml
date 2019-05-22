@@ -43,7 +43,7 @@
                         app:layout_constraintStart_toStartOf="parent"/>
 
                     <SeekBar
-                        android:id="@+id/f_travel_video_sb_current_position"
+                        android:id="@+id/f_travel_video_sb_video_position"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         app:layout_constraintBottom_toBottomOf="parent"

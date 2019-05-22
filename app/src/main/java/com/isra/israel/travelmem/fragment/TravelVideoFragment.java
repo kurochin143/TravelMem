@@ -1,16 +1,21 @@
 package com.isra.israel.travelmem.fragment;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.VideoView;
 
 import com.isra.israel.travelmem.R;
 import com.isra.israel.travelmem.model.TravelVideo;
-import com.isra.israel.travelmem.static_helpers.VideoStaticHelper;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class TravelVideoFragment extends Fragment {
     private static final String ARG_TRAVEL_VIDEO = "travel_video";
@@ -18,6 +23,11 @@ public class TravelVideoFragment extends Fragment {
     private TravelVideo travelVideo;
 
     private OnTravelVideoEditListener onTravelVideoEditListener;
+
+    private VideoView videoView;
+    private ImageView playPauseImageView;
+    private int videoDuration;
+    private Timer videoSeekBarUpdateTimer;
 
     public TravelVideoFragment() {
         // Required empty public constructor
@@ -43,12 +53,71 @@ public class TravelVideoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_travel_video, container, false);
+        final View view = inflater.inflate(R.layout.fragment_travel_video, container, false);
 
-        VideoView videoView = view.findViewById(R.id.f_travel_video_vv_video);
+        videoView = view.findViewById(R.id.f_travel_video_vv_video);
+
         if (travelVideo.getUriStr() != null) {
             videoView.setVideoURI(travelVideo.getUri());
-            videoView.start();
+            videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    videoDuration = videoView.getDuration();
+
+                    final SeekBar videoPositionSeekBar = view.findViewById(R.id.f_travel_video_sb_video_position);
+                    videoPositionSeekBar.setMax(videoDuration);
+                    videoPositionSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                        @Override
+                        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                            if (fromUser) {
+                                videoView.seekTo(progress);
+                            }
+                        }
+
+                        @Override
+                        public void onStartTrackingTouch(SeekBar seekBar) {
+
+                        }
+
+                        @Override
+                        public void onStopTrackingTouch(SeekBar seekBar) {
+
+                        }
+                    });
+
+                    videoSeekBarUpdateTimer = new Timer();
+                    videoSeekBarUpdateTimer.scheduleAtFixedRate(new TimerTask() {
+                        @Override
+                        public void run() {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    int currentPosition = videoView.getCurrentPosition();
+
+                                    if (currentPosition >= videoDuration) {
+                                        videoPositionSeekBar.setProgress(videoDuration);
+                                        pause();
+                                    } else {
+                                        videoPositionSeekBar.setProgress(currentPosition);
+                                    }
+                                }
+                            });
+                        }
+                    }, 0, 100);
+
+                    playPauseImageView = view.findViewById(R.id.f_travel_video_i_play_pause);
+                    playPauseImageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (videoView.isPlaying()) {
+                                pause();
+                            } else {
+                                play();
+                            }
+                        }
+                    });
+                }
+            });
         }
 
         view.findViewById(R.id.f_travel_video_b_delete).setOnClickListener(new View.OnClickListener() {
@@ -80,6 +149,36 @@ public class TravelVideoFragment extends Fragment {
         }
 
         return view;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        if (videoSeekBarUpdateTimer != null) {
+            videoSeekBarUpdateTimer.cancel();
+        }
+    }
+
+    private void play() {
+        if (videoView.isPlaying()) {
+            return;
+        }
+
+        // TODO HIGH ANIMATION
+        playPauseImageView.setImageResource(R.drawable.ic_pause_50dp);
+
+        videoView.start();
+    }
+
+    private void pause() {
+        if (!videoView.isPlaying()) {
+            return;
+        }
+
+        playPauseImageView.setImageResource(R.drawable.ic_play_arrow_50dp);
+
+        videoView.pause();
     }
 
     public void setOnTravelVideoEditListener(OnTravelVideoEditListener onTravelVideoEditListener) {
