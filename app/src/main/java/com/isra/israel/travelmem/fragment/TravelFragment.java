@@ -8,6 +8,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -23,19 +24,24 @@ import java.util.ArrayList;
 public class TravelFragment extends Fragment {
 
     private static final String ARG_TRAVEL = "travel";
+    private static final String ARG_IS_CREATING = "is_creating";
 
     private Travel travel;
+    private boolean isCreating;
 
     private OnTravelEditListener onTravelEditListener;
+    private OnTravelCreateListener onTravelCreateListener;
+    private OnTravelDeleteListener onTravelDeleteListener;
 
     public TravelFragment() {
         // Required empty public constructor
     }
 
-    public static TravelFragment newInstance(Travel travel) {
+    public static TravelFragment newInstance(Travel travel, boolean isCreating) {
         TravelFragment fragment = new TravelFragment();
         Bundle args = new Bundle();
         args.putParcelable(ARG_TRAVEL, travel);
+        args.putBoolean(ARG_IS_CREATING, isCreating);
         fragment.setArguments(args);
         return fragment;
     }
@@ -45,6 +51,7 @@ public class TravelFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             travel = getArguments().getParcelable(ARG_TRAVEL);
+            isCreating = getArguments().getBoolean(ARG_IS_CREATING);
         }
     }
 
@@ -55,23 +62,82 @@ public class TravelFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_travel, container, false);
 
         // map
-        view.findViewById(R.id.f_travel_b_view_on_map).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TravelMapViewFragment travelMapViewFragment = TravelMapViewFragment.newInstance(travel);
-                travelMapViewFragment.setOnTravelEditListener(new TravelMapViewFragment.OnTravelEditListener() {
-                    @Override
-                    public void onTravelEdit(Travel travel) {
-                        TravelFragment.this.travel = travel;
-                        onTravelEditListener.onTravelEdit(TravelFragment.this.travel);
-                    }
-                });
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .add(R.id.f_travel_fl_root, travelMapViewFragment)
-                        .addToBackStack(null)
-                        .commit();
-            }
-        });
+        Button viewOnMapButton = view.findViewById(R.id.f_travel_b_view_on_map);
+        if (isCreating) {
+            viewOnMapButton.setVisibility(View.GONE);
+        } else {
+            viewOnMapButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // open travel map fragment
+                    TravelMapViewFragment travelMapViewFragment = TravelMapViewFragment.newInstance(travel);
+                    travelMapViewFragment.setOnTravelEditListener(new TravelMapViewFragment.OnTravelEditListener() {
+                        @Override
+                        public void onTravelEdit(Travel travel) {
+                            TravelFragment.this.travel = travel;
+                            onTravelEditListener.onTravelEdit(TravelFragment.this.travel);
+                        }
+                    });
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .add(R.id.f_travel_fl_root, travelMapViewFragment)
+                            .addToBackStack(null)
+                            .commit();
+                }
+            });
+        }
+
+        // delete button
+        Button deleteButton = view.findViewById(R.id.f_travel_b_delete);
+        if (isCreating) {
+            deleteButton.setVisibility(View.GONE);
+        } else {
+            deleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onTravelDeleteListener.onTravelDelete(travel.getId());
+
+                    // close fragment
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .remove(TravelFragment.this)
+                            .commit();
+                }
+            });
+        }
+
+        // creating save button
+        Button creatingSaveButton = view.findViewById(R.id.f_travel_b_creating_save);
+        if (isCreating) {
+            creatingSaveButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // edit
+                    onTravelCreateListener.onTravelCreate(travel);
+
+                    // close fragment
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .remove(TravelFragment.this)
+                            .commit();
+                }
+            });
+        } else {
+            creatingSaveButton.setVisibility(View.GONE);
+        }
+
+        // creating cancel button
+        Button creatingCancelButton = view.findViewById(R.id.f_travel_b_creating_cancel);
+        if (isCreating) {
+            creatingCancelButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // close fragment
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .remove(TravelFragment.this)
+                            .commit();
+                }
+            });
+        } else {
+            creatingCancelButton.setVisibility(View.GONE);
+        }
 
         // name
         final TextView nameTextView = view.findViewById(R.id.f_travel_t_name);
@@ -94,7 +160,9 @@ public class TravelFragment extends Fragment {
                         nameTextView.setText(nameEditText.getText());
                         travel.setName(nameTextView.getText().toString());
 
-                        onTravelEditListener.onTravelEdit(travel);
+                        if (onTravelEditListener != null) {
+                            onTravelEditListener.onTravelEdit(travel);
+                        }
 
                         return true;
                     }
@@ -105,6 +173,7 @@ public class TravelFragment extends Fragment {
             }
         });
 
+        // TODO edit date
         // start date
         TextView startDateTextView = view.findViewById(R.id.f_travel_t_start_date);
         startDateTextView.setText(travel.getStartDate());
@@ -140,7 +209,9 @@ public class TravelFragment extends Fragment {
                         originTextView.setText(origin.getName());
                         destinationTextView.setText(destination.getName());
 
-                        onTravelEditListener.onTravelEdit(travel);
+                        if (onTravelEditListener != null) {
+                            onTravelEditListener.onTravelEdit(travel);
+                        }
                     }
                 });
 
@@ -161,7 +232,9 @@ public class TravelFragment extends Fragment {
                     public void onTravelImagesEditedListener(ArrayList<TravelImage> travelImages) {
                         travel.setImages(travelImages);
 
-                        onTravelEditListener.onTravelEdit(travel);
+                        if (onTravelEditListener != null) {
+                            onTravelEditListener.onTravelEdit(travel);
+                        }
                     }
                 });
 
@@ -182,7 +255,9 @@ public class TravelFragment extends Fragment {
                     public void onTravelVideosEditListener(ArrayList<TravelVideo> travelVideos) {
                         travel.setVideos(travelVideos);
 
-                        onTravelEditListener.onTravelEdit(travel);
+                        if (onTravelEditListener != null) {
+                            onTravelEditListener.onTravelEdit(travel);
+                        }
                     }
                 });
 
@@ -196,24 +271,27 @@ public class TravelFragment extends Fragment {
         return view;
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnTravelEditListener) {
-            onTravelEditListener = (OnTravelEditListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnTravelEditedListener");
-        }
+    public void setOnTravelEditListener(OnTravelEditListener l) {
+        onTravelEditListener = l;
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        onTravelEditListener = null;
+    public void setOnTravelCreateListener(OnTravelCreateListener l) {
+        onTravelCreateListener = l;
+    }
+
+    public void setOnTravelDeleteListener(OnTravelDeleteListener l) {
+        onTravelDeleteListener = l;
     }
 
     public interface OnTravelEditListener {
         void onTravelEdit(Travel travel);
+    }
+
+    public interface OnTravelCreateListener {
+        void onTravelCreate(Travel travel);
+    }
+
+    public interface OnTravelDeleteListener {
+        void onTravelDelete(String id);
     }
 }

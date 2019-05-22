@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Pair;
 import android.view.View;
 
 import com.google.android.libraries.places.api.Places;
@@ -13,6 +14,7 @@ import com.isra.israel.travelmem.api.TravelMemAPIDAO;
 import com.isra.israel.travelmem.dao.FirebaseSessionSPDAO;
 import com.isra.israel.travelmem.dao.TravelMemLocalCacheDAO;
 import com.isra.israel.travelmem.fragment.TravelFragment;
+import com.isra.israel.travelmem.model.FirebasePOSTResponse;
 import com.isra.israel.travelmem.model.Travel;
 
 import java.util.ArrayList;
@@ -24,7 +26,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class TravelsActivity extends AppCompatActivity implements TravelFragment.OnTravelEditListener {
+public class TravelsActivity extends AppCompatActivity {
 
     private TravelsAdapter travelsAdapter;
     private Call<HashMap<String, Travel>> getTravelsCall;
@@ -50,11 +52,76 @@ public class TravelsActivity extends AppCompatActivity implements TravelFragment
             public void onTravelClick(Travel travel, int position) {
                 openedTravelPosition = position;
 
-                // open travel fragment
+                // open travel fragment for viewing/editing
+                TravelFragment travelFragment = TravelFragment.newInstance(travel, false);
+
+                // on edit
+                travelFragment.setOnTravelEditListener(new TravelFragment.OnTravelEditListener() {
+                    @Override
+                    public void onTravelEdit(Travel travel) {
+                        travel.setLastUpdatedTime(System.currentTimeMillis());
+                        travelsAdapter.setTravelAt(travel, openedTravelPosition);
+
+                        // update travel at TravelMemAPI
+                        Call<ResponseBody> updateTravelCall = TravelMemAPIDAO.apiService.updateTravel(
+                                FirebaseSessionSPDAO.getUid(TravelsActivity.this),
+                                travel.getId(),
+                                FirebaseSessionSPDAO.getIdToken(TravelsActivity.this),
+                                travel
+                        );
+
+                        // NOTE: if this fails. SyncService will take care of it
+                        updateTravelCall.enqueue(new Callback<ResponseBody>() {
+                            @Override
+                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                            }
+
+                            @Override
+                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                            }
+                        });
+
+                        // update travel local cache
+                        TravelMemLocalCacheDAO.updateTravel(TravelsActivity.this, travel);
+                    }
+                });
+
+                // on delete
+                travelFragment.setOnTravelDeleteListener(new TravelFragment.OnTravelDeleteListener() {
+                    @Override
+                    public void onTravelDelete(String id) {
+                        travelsAdapter.removeTravel(id);
+
+                        Call<ResponseBody> deleteTravelCall = TravelMemAPIDAO.apiService.deleteTravel(
+                                FirebaseSessionSPDAO.getUid(TravelsActivity.this),
+                                id,
+                                FirebaseSessionSPDAO.getIdToken(TravelsActivity.this)
+                        );
+
+                        // NOTE: if this fails. SyncService will take care of it
+                        deleteTravelCall.enqueue(new Callback<ResponseBody>() {
+                            @Override
+                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
+                            }
+
+                            @Override
+                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                            }
+                        });
+
+                        TravelMemLocalCacheDAO.deleteTravel(TravelsActivity.this, id);
+                    }
+                });
+
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.a_travels_fl_root, TravelFragment.newInstance(travel))
+                        .add(R.id.a_travels_fl_root, travelFragment)
                         .addToBackStack(null)
                         .commit();
+
             }
         });
 
@@ -62,7 +129,48 @@ public class TravelsActivity extends AppCompatActivity implements TravelFragment
         findViewById(R.id.a_travels_b_add_travel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                
+                // open travel fragment for creation
+                TravelFragment travelFragment = TravelFragment.newInstance(new Travel(), true);
+
+                // on create
+                travelFragment.setOnTravelCreateListener(new TravelFragment.OnTravelCreateListener() {
+                    @Override
+                    public void onTravelCreate(final Travel travel) {
+                        travel.setCreationTime(System.currentTimeMillis());
+                        travelsAdapter.addTravel(travel);
+
+                        Call<FirebasePOSTResponse> addTravelCall = TravelMemAPIDAO.apiService.addTravel(
+                                FirebaseSessionSPDAO.getUid(TravelsActivity.this),
+                                FirebaseSessionSPDAO.getIdToken(TravelsActivity.this),
+                                travel
+                        );
+
+                        // NOTE: if this fails. SyncService will take care of it
+                        addTravelCall.enqueue(new Callback<FirebasePOSTResponse>() {
+                            @Override
+                            public void onResponse(Call<FirebasePOSTResponse> call, Response<FirebasePOSTResponse> response) {
+                                if (response.isSuccessful() && response.body() != null) {
+                                    travel.setId(response.body().name);
+
+                                    // update travel local cache
+                                    TravelMemLocalCacheDAO.addTravel(TravelsActivity.this, travel);
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<FirebasePOSTResponse> call, Throwable t) {
+
+                            }
+                        });
+
+                        // can't update cache because there's still no id
+                    }
+                });
+
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.a_travels_fl_root, travelFragment)
+                        .addToBackStack(null)
+                        .commit();
             }
         });
 
@@ -123,34 +231,4 @@ public class TravelsActivity extends AppCompatActivity implements TravelFragment
         }
     }
 
-    @Override
-    public void onTravelEdit(Travel travel) {
-        travel.setLastUpdatedTime(System.currentTimeMillis());
-        travelsAdapter.setTravelAt(travel, openedTravelPosition);
-
-        // update travel at TravelMemAPI
-        final Call<ResponseBody> updateTravelCall = TravelMemAPIDAO.apiService.updateTravel(
-                FirebaseSessionSPDAO.getUid(this),
-                travel.getId(),
-                FirebaseSessionSPDAO.getIdToken(this),
-                travel
-        );
-
-        // NOTE: if this fails. SyncService will take care of it
-        updateTravelCall.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-            }
-        });
-
-        // update travel locally
-        TravelMemLocalCacheDAO.updateTravel(this, travel);
-
-    }
 }

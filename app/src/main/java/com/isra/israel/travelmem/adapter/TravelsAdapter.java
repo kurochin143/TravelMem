@@ -23,7 +23,7 @@ public class TravelsAdapter extends RecyclerView.Adapter<TravelsAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         final Travel travel = travels.get(position);
 
         holder.nameTextView.setText(travel.getName());
@@ -33,7 +33,7 @@ public class TravelsAdapter extends RecyclerView.Adapter<TravelsAdapter.ViewHold
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onTravelClickListener.onTravelClick(travel, position);
+                onTravelClickListener.onTravelClick(travel, holder.getAdapterPosition());
             }
         });
     }
@@ -51,6 +51,22 @@ public class TravelsAdapter extends RecyclerView.Adapter<TravelsAdapter.ViewHold
     public void setTravelAt(@NonNull Travel travel, int index) {
         this.travels.set(index, travel);
         notifyItemChanged(index);
+    }
+
+    public void addTravel(@NonNull Travel travel) {
+        travels.add(travel);
+        notifyItemInserted(travels.size() - 1);
+    }
+
+    public void removeTravel(String id) {
+        for (int i = 0; i < travels.size(); ++i) {
+            Travel travel = travels.get(i);
+            if (travel.getId().equals(id)) {
+                travels.remove(i);
+                notifyItemRemoved(i);
+                break;
+            }
+        }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

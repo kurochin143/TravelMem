@@ -80,7 +80,10 @@ public class RouteEditorFragment extends Fragment {
             public void onMapReady(GoogleMap googleMap) {
                 RouteEditorFragment.this.googleMap = googleMap;
 
-                drawRoute(route);
+                if (route != null) {
+                    drawRoute(route);
+                }
+
             }
         });
 

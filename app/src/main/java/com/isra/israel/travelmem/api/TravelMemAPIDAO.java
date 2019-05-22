@@ -3,6 +3,7 @@ package com.isra.israel.travelmem.api;
 import android.util.Pair;
 
 import com.isra.israel.travelmem.gson.TravelMemGson;
+import com.isra.israel.travelmem.model.FirebasePOSTResponse;
 import com.isra.israel.travelmem.model.Travel;
 
 import java.util.HashMap;
@@ -14,6 +15,7 @@ import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
@@ -51,10 +53,13 @@ public class TravelMemAPIDAO {
         Call<HashMap<String, Travel>> getTravels(@Path(value = "uid") String uid, @Query(value = "auth") String idToken);
 
         @POST(TRAVELS + "{uid}/" + JSON)
-        Call<Pair<String, String>> addTravel(@Path(value = "uid") String uid, @Query(value = "auth") String idToken, @Body Travel travel);
+        Call<FirebasePOSTResponse> addTravel(@Path(value = "uid") String uid, @Query(value = "auth") String idToken, @Body Travel travel);
 
         @PATCH(TRAVELS + "{uid}/{travelId}" + JSON)
         Call<ResponseBody> updateTravel(@Path(value = "uid") String uid, @Path(value = "travelId") String travelId, @Query(value = "auth") String idToken, @Body Travel travel);
+
+        @DELETE(TRAVELS + "{uid}/{travelId}" + JSON)
+        Call<ResponseBody> deleteTravel(@Path(value = "uid") String uid, @Path(value = "travelId") String travelId, @Query(value = "auth") String idToken);
 
         @GET(USERS + "{uid}/" + JSON)
         Call<ResponseBody> getUser(@Path(value = "uid") String uid, @Query(value = "auth") String idToken);
