@@ -16,12 +16,14 @@
             android:id="@+id/a_login_et_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/commonTextColor"
             android:hint="Email"/>
 
         <EditText
             android:id="@+id/a_login_et_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/commonTextColor"
             android:hint="Password"/>
 
         <Button

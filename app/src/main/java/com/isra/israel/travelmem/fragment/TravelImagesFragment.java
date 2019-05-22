@@ -16,6 +16,7 @@ import com.isra.israel.travelmem.model.TravelImage;
 
 import java.util.ArrayList;
 
+// TODO ON HOLD images. may be unimplemented
 public class TravelImagesFragment extends Fragment {
     private static final String ARG_TRAVEL_IMAGES = "travel_images";
     private static final int RC_IMAGE = 0;

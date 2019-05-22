@@ -1,6 +1,11 @@
 package com.isra.israel.travelmem.fragment;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.VectorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -12,14 +17,18 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.maps.android.PolyUtil;
+import com.google.maps.android.ui.IconGenerator;
 import com.isra.israel.travelmem.R;
 import com.isra.israel.travelmem.api.GoogleDirectionsAPIDAO;
 import com.isra.israel.travelmem.model.directions.GoogleDirectionsResult;
@@ -36,15 +45,20 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+// TODO MEDIUM progress bar
 public class RouteEditorFragment extends Fragment {
     private static final String ARG_ROUTE = "route";
+    private static final String ARG_ORIGIN = "origin";
+    private static final String ARG_DESTINATION = "destination";
 
     private ArrayList<Route> routes;
     private Route route;
-    private ArrayList<Polyline> polylines = new ArrayList<>();
     private GoogleMap googleMap;
-    private Point origin = new Point();
-    private Point destination = new Point();
+    private ArrayList<Polyline> polylines = new ArrayList<>();
+    private Marker originMarker;
+    private Marker destinationMarker;
+    private Point origin;
+    private Point destination;
     private Call<GoogleDirectionsResult> getDirectionCall;
 
     private OnRouteEditListener onRouteEditListener;
@@ -53,10 +67,12 @@ public class RouteEditorFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static RouteEditorFragment newInstance(Route route) {
+    public static RouteEditorFragment newInstance(Route route, Point origin, Point destination) {
         RouteEditorFragment fragment = new RouteEditorFragment();
         Bundle args = new Bundle();
         args.putParcelable(ARG_ROUTE, route);
+        args.putParcelable(ARG_ORIGIN, origin);
+        args.putParcelable(ARG_DESTINATION, destination);
         fragment.setArguments(args);
         return fragment;
     }
@@ -66,6 +82,14 @@ public class RouteEditorFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             route = getArguments().getParcelable(ARG_ROUTE);
+            origin = getArguments().getParcelable(ARG_ORIGIN);
+            if (origin == null) {
+                origin = new Point();
+            }
+            destination = getArguments().getParcelable(ARG_DESTINATION);
+            if (destination == null) {
+                destination = new Point();
+            }
         }
     }
 
@@ -74,6 +98,8 @@ public class RouteEditorFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_route_editor, container, false);
+
+        // google map
         SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.f_route_editor_f_google_map);
         supportMapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
@@ -87,6 +113,8 @@ public class RouteEditorFragment extends Fragment {
             }
         });
 
+
+        // origin google places
         AutocompleteSupportFragment originAutocompleteSupportFragment = (AutocompleteSupportFragment) getChildFragmentManager().findFragmentById(R.id.f_route_editor_f_autocomplete_origin);
         originAutocompleteSupportFragment.setPlaceFields(Arrays.asList(Place.Field.ADDRESS, Place.Field.LAT_LNG));
         originAutocompleteSupportFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
@@ -95,7 +123,7 @@ public class RouteEditorFragment extends Fragment {
                 origin.setName(place.getAddress());
                 origin.setLatLng(place.getLatLng());
 
-                requestDirectionByName();
+                requestDirection();
             }
 
             @Override
@@ -104,6 +132,7 @@ public class RouteEditorFragment extends Fragment {
             }
         });
 
+        // destination google places
         AutocompleteSupportFragment destinationAutocompleteSupportFragment = (AutocompleteSupportFragment) getChildFragmentManager().findFragmentById(R.id.f_route_editor_f_autocomplete_destination);
         destinationAutocompleteSupportFragment.setPlaceFields(Arrays.asList(Place.Field.ADDRESS, Place.Field.LAT_LNG));
         destinationAutocompleteSupportFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
@@ -112,7 +141,7 @@ public class RouteEditorFragment extends Fragment {
                 destination.setName(place.getAddress());
                 destination.setLatLng(place.getLatLng());
 
-                requestDirectionByName();
+                requestDirection();
             }
 
             @Override
@@ -124,7 +153,7 @@ public class RouteEditorFragment extends Fragment {
         return view;
     }
 
-    private void requestDirectionByName() {
+    private void requestDirection() {
         if (getDirectionCall != null){
             return;
         }
@@ -173,6 +202,14 @@ public class RouteEditorFragment extends Fragment {
             polyline.remove();
         }
 
+        if (originMarker != null) {
+            originMarker.remove();
+        }
+
+        if (destinationMarker != null) {
+            destinationMarker.remove();
+        }
+
         if (routes.size() == 0) {
             return;
         }
@@ -212,6 +249,31 @@ public class RouteEditorFragment extends Fragment {
         }
 
         polylines.add(googleMap.addPolyline(polylineOptions));
+
+
+        Bitmap originMarkerBitmap = getBitmap((VectorDrawable) getContext().getResources().getDrawable(R.drawable.ic_place_32dp));
+
+        originMarker = googleMap.addMarker(new MarkerOptions()
+                .position(origin.getLatLng())
+                .icon(BitmapDescriptorFactory.fromBitmap(originMarkerBitmap))
+        );
+
+        Bitmap destinationMarkerBitmap = getBitmap((VectorDrawable) getContext().getResources().getDrawable(R.drawable.ic_flag_32dp));
+
+        destinationMarker = googleMap.addMarker(new MarkerOptions()
+                .position(destination.getLatLng())
+                .icon(BitmapDescriptorFactory.fromBitmap(destinationMarkerBitmap))
+        );
+
+    }
+
+    private static Bitmap getBitmap(VectorDrawable vectorDrawable) {
+        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(),
+                vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        vectorDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        vectorDrawable.draw(canvas);
+        return bitmap;
     }
 
     public void setOnRouteEditListener(OnRouteEditListener onRouteEditedListener) {

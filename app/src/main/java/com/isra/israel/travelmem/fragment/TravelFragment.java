@@ -197,7 +197,7 @@ public class TravelFragment extends Fragment {
         view.findViewById(R.id.f_travel_b_route).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RouteEditorFragment routeEditorFragment = RouteEditorFragment.newInstance(travel.getRoute());
+                RouteEditorFragment routeEditorFragment = RouteEditorFragment.newInstance(travel.getRoute(), travel.getOrigin(), travel.getDestination());
                 routeEditorFragment.setOnRouteEditListener(new RouteEditorFragment.OnRouteEditListener() {
                     @Override
                     public void onRouteEdit(Route route, Point origin, Point destination) {
