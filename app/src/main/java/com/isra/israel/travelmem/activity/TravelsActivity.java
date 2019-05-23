@@ -23,6 +23,8 @@ import com.isra.israel.travelmem.model.Travel;
 import com.isra.israel.travelmem.view_model.TravelsViewModel;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class TravelsActivity extends AppCompatActivity {
 
@@ -31,6 +33,7 @@ public class TravelsActivity extends AppCompatActivity {
     private TravelsAdapter travelsAdapter;
     private TravelsViewModel travelsViewModel;
     private int openedTravelPosition;
+    private Timer locationNotificationTimer = new Timer();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,7 +144,18 @@ public class TravelsActivity extends AppCompatActivity {
             }
         });
 
-        // TODO
+        // TODO notification
+        locationNotificationTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                    }
+                });
+            }
+        }, 0, 1000);
 
     }
 
@@ -164,5 +178,12 @@ public class TravelsActivity extends AppCompatActivity {
         }
 
         return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        locationNotificationTimer.cancel();
     }
 }

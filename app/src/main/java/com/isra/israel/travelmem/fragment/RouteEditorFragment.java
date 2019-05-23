@@ -1,28 +1,38 @@
 package com.isra.israel.travelmem.fragment;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.VectorDrawable;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.internal.ee;
 import com.google.android.libraries.places.widget.Autocomplete;
@@ -70,6 +80,7 @@ public class RouteEditorFragment extends Fragment {
         fields.add(Place.Field.ADDRESS);
         fields.add(Place.Field.LAT_LNG);
     }
+    private FusedLocationProviderClient fusedLocationProviderClient;
 
     private OnRouteEditListener onRouteEditListener;
 
@@ -109,6 +120,8 @@ public class RouteEditorFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_route_editor, container, false);
 
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
+
         // google map
         SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.f_route_editor_f_google_map);
         supportMapFragment.getMapAsync(new OnMapReadyCallback() {
@@ -132,22 +145,61 @@ public class RouteEditorFragment extends Fragment {
         });
 
         // origin search
-        view.findViewById(R.id.f_route_editor_ib_search_origin).setOnClickListener(new View.OnClickListener() {
+        ImageButton searchOriginIB = view.findViewById(R.id.f_route_editor_ib_search_origin);
+        searchOriginIB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = (new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)).a(ee.a).build(getActivity());
                 startActivityForResult(intent, RC_SEARCH_ORIGIN);
             }
         });
+        searchOriginIB.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    // use user location as origin
+                    fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            setOrigin(null, new LatLng(location.getLatitude(), location.getLongitude()));
+                        }
+                    });
+                } else {
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                }
+
+                return true;
+            }
+        });
 
         // destination search
-        view.findViewById(R.id.f_route_editor_ib_search_destination).setOnClickListener(new View.OnClickListener() {
+        ImageButton searchDestinationIB = view.findViewById(R.id.f_route_editor_ib_search_destination);
+        searchDestinationIB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = (new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)).a(ee.a).build(getActivity());
                 startActivityForResult(intent, RC_SEARCH_DESTINATION);
             }
         });
+        searchDestinationIB.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    // use user location as destination
+                    fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            setDestination(null, new LatLng(location.getLatitude(), location.getLongitude()));
+                        }
+                    });
+                } else {
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                }
+
+                return true;
+            }
+        });
+
 
         deleteWaypointButton = view.findViewById(R.id.f_route_editor_ib_delete_waypoint);
         deleteWaypointButton.setOnClickListener(new View.OnClickListener() {
@@ -170,21 +222,12 @@ public class RouteEditorFragment extends Fragment {
         if (resultCode == -1) {
             if (requestCode == RC_SEARCH_ORIGIN) {
                 Place place = Autocomplete.getPlaceFromIntent(intent);
-                origin.setName(place.getAddress());
-                origin.setLatLng(place.getLatLng());
 
-                waypoints.clear(); // clear waypoints
-
-                requestDirection();
+                setOrigin(place.getAddress(), place.getLatLng());
             } else if (requestCode == RC_SEARCH_DESTINATION) {
                 Place place = Autocomplete.getPlaceFromIntent(intent);
 
-                destination.setName(place.getAddress());
-                destination.setLatLng(place.getLatLng());
-
-                waypoints.clear(); // clear waypoints
-
-                requestDirection();
+                setDestination(place.getAddress(), place.getLatLng());
             }
         }
 
@@ -313,6 +356,9 @@ public class RouteEditorFragment extends Fragment {
             }
         }
 
+        drawOriginMarker();
+        drawDestinationMarker();
+
         // do not add marker for the last one
         for (int i = 0; i < waypointMarkerOptions.size() - 1; ++i) {
             MarkerOptions markerOptions = waypointMarkerOptions.get(i);
@@ -324,27 +370,6 @@ public class RouteEditorFragment extends Fragment {
         }
 
         polylines.add(googleMap.addPolyline(polylineOptions));
-
-        if (route.getLegs().size() != 0) {
-            Leg leg0 = route.getLegs().get(0);
-            LatLng origin = leg0.getStartLocation();
-            Leg legLast = route.getLegs().get(route.getLegs().size() - 1);
-            LatLng destination = legLast.getEndLocation();
-
-            Bitmap originMarkerBitmap = BitmapStaticHelper.getBitmap((VectorDrawable) getContext().getResources().getDrawable(R.drawable.ic_place_32dp));
-
-            originMarker = googleMap.addMarker(new MarkerOptions()
-                    .position(origin)
-                    .icon(BitmapDescriptorFactory.fromBitmap(originMarkerBitmap))
-            );
-
-            Bitmap destinationMarkerBitmap = BitmapStaticHelper.getBitmap((VectorDrawable) getContext().getResources().getDrawable(R.drawable.ic_flag_32dp));
-
-            destinationMarker = googleMap.addMarker(new MarkerOptions()
-                    .position(destination)
-                    .icon(BitmapDescriptorFactory.fromBitmap(destinationMarkerBitmap))
-            );
-        }
 
         googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
@@ -386,6 +411,61 @@ public class RouteEditorFragment extends Fragment {
                 requestDirection();
             }
         });
+    }
+
+    private void setOrigin(@Nullable String name, LatLng latLng) {
+        if (name == null) {
+            origin.setName(latLng.latitude + ", " + latLng.longitude);
+        } else {
+            origin.setName(name);
+        }
+        origin.setLatLng(latLng);
+
+        if (destination.getLatLng() == null) {
+            drawOriginMarker();
+
+            googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(CameraPosition.builder().target(origin.getLatLng()).build()));
+        }
+
+        waypoints.clear(); // clear waypoints
+
+        requestDirection();
+    }
+
+    private void setDestination(@Nullable String name, LatLng latLng) {
+        if (name == null) {
+            destination.setName(latLng.latitude + ", " + latLng.longitude);
+        } else {
+            destination.setName(name);
+        }
+
+        destination.setLatLng(latLng);
+
+        if (origin.getLatLng() == null) {
+            drawDestinationMarker();
+
+            googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(CameraPosition.builder().target(destination.getLatLng()).build()));
+        }
+
+        waypoints.clear(); // clear waypoints
+
+        requestDirection();
+    }
+
+    private void drawOriginMarker() {
+        Bitmap originMarkerBitmap = BitmapStaticHelper.getBitmap((VectorDrawable) getContext().getResources().getDrawable(R.drawable.ic_place_32dp));
+        originMarker = googleMap.addMarker(new MarkerOptions()
+                .position(origin.getLatLng())
+                .icon(BitmapDescriptorFactory.fromBitmap(originMarkerBitmap))
+        );
+    }
+
+    private void drawDestinationMarker() {
+        Bitmap destinationMarkerBitmap = BitmapStaticHelper.getBitmap((VectorDrawable) getContext().getResources().getDrawable(R.drawable.ic_flag_32dp));
+        destinationMarker = googleMap.addMarker(new MarkerOptions()
+                .position(destination.getLatLng())
+                .icon(BitmapDescriptorFactory.fromBitmap(destinationMarkerBitmap))
+        );
     }
 
     private void setSelectedWaypointMarker(Marker marker) {
