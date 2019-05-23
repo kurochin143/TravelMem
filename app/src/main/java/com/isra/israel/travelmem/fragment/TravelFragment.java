@@ -9,7 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
@@ -273,6 +275,20 @@ public class TravelFragment extends Fragment {
                 }
             });
         }
+
+        // notify
+        Switch notifySwitch = view.findViewById(R.id.f_travel_s_notify);
+        notifySwitch.setChecked(travel.shouldNotify() == 1);
+        notifySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                travel.setShouldNotify(isChecked ? 1 : 0);
+
+                if (onTravelEditListener != null) {
+                    onTravelEditListener.onTravelEdit(travel);
+                }
+            }
+        });
 
         // description
         final ViewSwitcher descriptionViewSwitcher = view.findViewById(R.id.f_travel_vs_description);

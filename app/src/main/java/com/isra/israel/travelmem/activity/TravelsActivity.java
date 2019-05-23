@@ -151,7 +151,7 @@ public class TravelsActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-
+                        
                     }
                 });
             }
