@@ -7,6 +7,7 @@ import android.graphics.drawable.VectorDrawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -79,7 +80,12 @@ public class TravelMapViewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_travel_map_view, container, false);
+        return inflater.inflate(R.layout.fragment_travel_map_view, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.fragment_travels_map_google_map);
         supportMapFragment.getMapAsync(new OnMapReadyCallback() {
@@ -95,7 +101,7 @@ public class TravelMapViewFragment extends Fragment {
                 if (route != null) {
                     if (route.getBounds() != null && route.getBounds().getSouthWest() != null && route.getBounds().getNorthEast() != null) {
                         googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(
-                                new LatLngBounds(route.getBounds().getSouthWest(), route.getBounds().getNorthEast()), 0));
+                                new LatLngBounds(route.getBounds().getSouthWest(), route.getBounds().getNorthEast()), 1));
                     }
 
                     ArrayList<PolylineOptions> polylineOptionsList = new ArrayList<>();
@@ -250,8 +256,6 @@ public class TravelMapViewFragment extends Fragment {
                 });
             }
         });
-
-        return view;
     }
 
     private void addTravelVideoMarker(final TravelVideo travelVideo) {

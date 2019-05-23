@@ -118,7 +118,12 @@ public class RouteEditorFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_route_editor, container, false);
+        return inflater.inflate(R.layout.fragment_route_editor, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
 
@@ -200,7 +205,6 @@ public class RouteEditorFragment extends Fragment {
             }
         });
 
-
         deleteWaypointButton = view.findViewById(R.id.f_route_editor_ib_delete_waypoint);
         deleteWaypointButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -211,8 +215,6 @@ public class RouteEditorFragment extends Fragment {
                 requestDirection();
             }
         });
-
-        return view;
     }
 
     @Override

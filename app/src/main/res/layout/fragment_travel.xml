@@ -26,7 +26,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/view_on_map"
-                android:backgroundTint="@color/commonButtonColor"/>
+                android:backgroundTint="@color/commonButtonColor"
+                android:textColor="@color/commonButtonTextColor"
+                android:visibility="gone"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/f_travel_i_view_on_map"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_map_24dp"
+                    android:layout_centerHorizontal="true"/>
+
+            </RelativeLayout>
 
             <ViewSwitcher
                 android:id="@+id/f_travel_vs_name"
@@ -40,7 +55,6 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/name"
                     android:textSize="20sp"
-                    android:textStyle="bold"
                     android:textColor="@color/commonTextColor"/>
 
                 <EditText
@@ -78,7 +92,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Origin"
-                android:textSize="20sp"
+                android:textSize="15sp"
                 android:textColor="@color/commonTextColor"/>
 
             <TextView
@@ -86,7 +100,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Destination"
-                android:textSize="20sp"
+                android:textSize="15sp"
                 android:textColor="@color/commonTextColor"/>
 
             <Button
@@ -94,7 +108,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/route"
-                android:backgroundTint="@color/commonButtonColor"/>
+                android:backgroundTint="@color/commonButtonColor"
+                android:textColor="@color/commonButtonTextColor"/>
 
             <Button
                 android:id="@+id/f_travel_b_images"
@@ -109,7 +124,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/videos"
-                android:backgroundTint="@color/commonButtonColor"/>
+                android:backgroundTint="@color/commonButtonColor"
+                android:textColor="@color/commonButtonTextColor"/>
 
             <Switch
                 android:id="@+id/f_travel_s_notify"
@@ -181,7 +197,8 @@
                 android:text="@string/save"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:backgroundTint="@color/commonButtonColor"/>
+                android:backgroundTint="@color/commonButtonColor"
+                android:textColor="@color/commonButtonTextColor"/>
 
             <Button
                 android:id="@+id/f_travel_b_creating_cancel"
@@ -190,7 +207,8 @@
                 android:text="@string/cancel"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:backgroundTint="@color/commonButtonColor" />
+                android:backgroundTint="@color/commonButtonColor"
+                android:textColor="@color/commonButtonTextColor"/>
 
         </android.support.constraint.ConstraintLayout>
 

@@ -11,6 +11,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
@@ -65,7 +66,7 @@ public class TravelFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_travel, container, false);
 
         // map
-        Button viewOnMapButton = view.findViewById(R.id.f_travel_b_view_on_map);
+        ImageView viewOnMapButton = view.findViewById(R.id.f_travel_i_view_on_map);
         if (isCreating) {
             viewOnMapButton.setVisibility(View.GONE);
         } else {
