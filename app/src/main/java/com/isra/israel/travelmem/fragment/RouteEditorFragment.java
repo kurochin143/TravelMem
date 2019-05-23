@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -60,6 +61,7 @@ public class RouteEditorFragment extends Fragment {
     private ArrayList<String> waypoints = new ArrayList<>();
     private ArrayList<Marker> waypointMarkers = new ArrayList<>();
     private Marker selectedWaypointMarker;
+    private ImageButton deleteWaypointButton;
     private Point origin;
     private Point destination;
     private Call<GoogleDirectionsResult> getDirectionCall;
@@ -144,6 +146,17 @@ public class RouteEditorFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent = (new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)).a(ee.a).build(getActivity());
                 startActivityForResult(intent, RC_SEARCH_DESTINATION);
+            }
+        });
+
+        deleteWaypointButton = view.findViewById(R.id.f_route_editor_ib_delete_waypoint);
+        deleteWaypointButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int index = (int)selectedWaypointMarker.getTag();
+                waypoints.remove(index);
+
+                requestDirection();
             }
         });
 
@@ -254,7 +267,7 @@ public class RouteEditorFragment extends Fragment {
         }
 
         // forget old selected waypoint marker
-        selectedWaypointMarker = null;
+        setSelectedWaypointMarker(null);
 
         if (routes.size() == 0) {
             return;
@@ -338,7 +351,7 @@ public class RouteEditorFragment extends Fragment {
             public boolean onMarkerClick(Marker marker) {
                 for (Marker waypointMarker : waypointMarkers) {
                     if (waypointMarker.getId().equals(marker.getId())) {
-                        selectedWaypointMarker = waypointMarker;
+                        setSelectedWaypointMarker(waypointMarker);
                         waypointMarker.showInfoWindow();
                         return true;
                     }
@@ -351,7 +364,7 @@ public class RouteEditorFragment extends Fragment {
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-                selectedWaypointMarker = null;
+                setSelectedWaypointMarker(null);
             }
         });
 
@@ -366,13 +379,23 @@ public class RouteEditorFragment extends Fragment {
 
                     waypoints.add(index + 1, latLngStr);
                 } else {
-                    // add waypoint after the origin
+                    // add waypoint after the last point(including origin) except destination
                     waypoints.add(latLngStr);
                 }
 
                 requestDirection();
             }
         });
+    }
+
+    private void setSelectedWaypointMarker(Marker marker) {
+        if (marker == null) {
+            deleteWaypointButton.setVisibility(View.GONE);
+        } else {
+            deleteWaypointButton.setVisibility(View.VISIBLE);
+        }
+
+        selectedWaypointMarker = marker;
     }
 
     public void setOnRouteEditListener(OnRouteEditListener onRouteEditedListener) {

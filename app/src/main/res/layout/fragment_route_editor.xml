@@ -22,26 +22,36 @@
                 android:layout_height="match_parent"/>
 
             <android.support.constraint.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
                 <ImageButton
                     android:id="@+id/f_route_editor_ib_search_origin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@color/commonButtonColor"
                     android:src="@drawable/ic_place_32dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:backgroundTint="@color/commonButtonColor"/>
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageButton
                     android:id="@+id/f_route_editor_ib_search_destination"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@color/commonButtonColor"
                     android:src="@drawable/ic_flag_32dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/f_route_editor_ib_search_origin"
-                    android:backgroundTint="@color/commonButtonColor"/>
+                    app:layout_constraintTop_toBottomOf="@+id/f_route_editor_ib_search_origin" />
+
+                <ImageButton
+                    android:id="@+id/f_route_editor_ib_delete_waypoint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/commonButtonColor"
+                    android:src="@drawable/ic_delete_forever_32dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:visibility="gone"/>
 
             </android.support.constraint.ConstraintLayout>
 
