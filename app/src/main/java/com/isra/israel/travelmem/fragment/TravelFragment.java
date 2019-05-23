@@ -83,6 +83,7 @@ public class TravelFragment extends Fragment {
                         }
                     });
                     getActivity().getSupportFragmentManager().beginTransaction()
+                            .setCustomAnimations(android.R.anim.slide_in_left,0, 0, android.R.anim.slide_out_right)
                             .add(R.id.f_travel_fl_root, travelMapViewFragment)
                             .addToBackStack(null)
                             .commit();
@@ -236,6 +237,7 @@ public class TravelFragment extends Fragment {
                 });
 
                 getActivity().getSupportFragmentManager().beginTransaction()
+                        .setCustomAnimations(android.R.anim.slide_in_left,0, 0, android.R.anim.slide_out_right)
                         .add(R.id.f_travel_fl_root, routeEditorFragment)
                         .addToBackStack(null)
                         .commit();
@@ -259,6 +261,7 @@ public class TravelFragment extends Fragment {
                 });
 
                 getActivity().getSupportFragmentManager().beginTransaction()
+                        .setCustomAnimations(android.R.anim.slide_in_left,0, 0, android.R.anim.slide_out_right)
                         .add(R.id.f_travel_fl_root, travelImagesFragment)
                         .addToBackStack(null)
                         .commit();
@@ -286,6 +289,7 @@ public class TravelFragment extends Fragment {
                     });
 
                     getActivity().getSupportFragmentManager().beginTransaction()
+                            .setCustomAnimations(android.R.anim.slide_in_left,0, 0, android.R.anim.slide_out_right)
                             .add(R.id.f_travel_fl_root, travelVideosFragment)
                             .addToBackStack(null)
                             .commit();

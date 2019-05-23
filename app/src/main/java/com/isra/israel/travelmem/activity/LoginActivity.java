@@ -44,6 +44,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 getSupportFragmentManager().beginTransaction()
+                        .setCustomAnimations(android.R.anim.slide_in_left,0, 0, android.R.anim.slide_out_right)
                         .add(R.id.a_login_fl_root, new RegisterFragment())
                         .addToBackStack(null)
                         .commit();

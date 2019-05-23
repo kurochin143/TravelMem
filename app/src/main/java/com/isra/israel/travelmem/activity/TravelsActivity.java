@@ -157,6 +157,7 @@ public class TravelsActivity extends AppCompatActivity
                 });
 
                 getSupportFragmentManager().beginTransaction()
+                        .setCustomAnimations(android.R.anim.slide_in_left,0, 0, android.R.anim.slide_out_right)
                         .add(R.id.a_travels_fl_fragment_root, travelFragment)
                         .addToBackStack(null)
                         .commit();
@@ -183,6 +184,7 @@ public class TravelsActivity extends AppCompatActivity
                 });
 
                 getSupportFragmentManager().beginTransaction()
+                        .setCustomAnimations(android.R.anim.slide_in_left,0, 0, android.R.anim.slide_out_right)
                         .add(R.id.a_travels_fl_fragment_root, travelFragment)
                         .addToBackStack(null)
                         .commit();
@@ -281,6 +283,7 @@ public class TravelsActivity extends AppCompatActivity
             case R.id.m_app_bar_settings: {
                 // open settings
                 getSupportFragmentManager().beginTransaction()
+                        .setCustomAnimations(android.R.anim.slide_in_left,0, 0, android.R.anim.slide_out_right)
                         .add(R.id.a_travels_fl_fragment_root, new SettingsFragment())
                         .addToBackStack(null)
                         .commit();

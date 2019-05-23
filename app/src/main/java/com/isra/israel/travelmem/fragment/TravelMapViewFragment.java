@@ -229,6 +229,7 @@ public class TravelMapViewFragment extends Fragment {
                                             }
                                         });
                                         getActivity().getSupportFragmentManager().beginTransaction()
+                                                .setCustomAnimations(android.R.anim.slide_in_left,0, 0, android.R.anim.slide_out_right)
                                                 .add(R.id.f_travel_map_view_fl_root, travelVideoFragment)
                                                 .addToBackStack(null)
                                                 .commit();
@@ -267,6 +268,7 @@ public class TravelMapViewFragment extends Fragment {
                         });
 
                         getActivity().getSupportFragmentManager().beginTransaction()
+                                .setCustomAnimations(android.R.anim.slide_in_left,0, 0, android.R.anim.slide_out_right)
                                 .add(R.id.f_travel_map_view_fl_root, addTravelVideoFragment)
                                 .addToBackStack(null)
                                 .commit();

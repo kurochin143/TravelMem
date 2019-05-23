@@ -91,6 +91,7 @@ public class TravelVideosFragment extends Fragment {
                 });
 
                 getActivity().getSupportFragmentManager().beginTransaction()
+                        .setCustomAnimations(android.R.anim.slide_in_left,0, 0, android.R.anim.slide_out_right)
                         .add(R.id.f_travel_videos_fl_root, travelVideoFragment)
                         .addToBackStack(null)
                         .commit();
@@ -122,6 +123,7 @@ public class TravelVideosFragment extends Fragment {
                 });
 
                 getActivity().getSupportFragmentManager().beginTransaction()
+                        .setCustomAnimations(android.R.anim.slide_in_left,0, 0, android.R.anim.slide_out_right)
                         .add(R.id.f_travel_videos_fl_root, addTravelVideoFragment)
                         .addToBackStack(null)
                         .commit();

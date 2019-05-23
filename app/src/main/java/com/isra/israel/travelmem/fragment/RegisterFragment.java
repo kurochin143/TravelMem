@@ -55,7 +55,10 @@ public class RegisterFragment extends Fragment {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             Toast.makeText(getContext(), "Registration successful", Toast.LENGTH_LONG).show();
-                            getActivity().getSupportFragmentManager().beginTransaction().remove(RegisterFragment.this).commit();
+                            getActivity().getSupportFragmentManager()
+                                    .beginTransaction()
+                                    .remove(RegisterFragment.this)
+                                    .commit();
                         } else {
                             Toast.makeText(getContext(), "Failed to register, " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
                         }
