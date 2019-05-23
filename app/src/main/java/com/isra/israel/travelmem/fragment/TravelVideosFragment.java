@@ -60,6 +60,7 @@ public class TravelVideosFragment extends Fragment {
             File file = new File(travelVideo.getUriStr());
             if (!file.exists()) {
                 somethingRemoved = true;
+                // remove it
                 travelVideos.remove(i);
             }
         }

@@ -36,6 +36,7 @@ import com.isra.israel.travelmem.model.directions.Step;
 import com.isra.israel.travelmem.static_helpers.BitmapStaticHelper;
 import com.isra.israel.travelmem.static_helpers.VideoStaticHelper;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -86,6 +87,23 @@ public class TravelMapViewFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        if (travel.getVideos() != null) {
+            boolean somethingRemoved = false;
+            for (int i = travel.getVideos().size() - 1; i > -1; --i) {
+                TravelVideo travelVideo = travel.getVideos().get(i);
+
+                File file = new File(travelVideo.getUriStr());
+                if (!file.exists()) {
+                    somethingRemoved = true;
+                    // remove it
+                    travel.getVideos().remove(i);
+                }
+            }
+            if (somethingRemoved) {
+                onTravelEditListener.onTravelEdit(travel);
+            }
+        }
 
         SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.fragment_travels_map_google_map);
         supportMapFragment.getMapAsync(new OnMapReadyCallback() {

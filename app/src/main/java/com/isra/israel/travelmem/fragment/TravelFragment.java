@@ -210,8 +210,24 @@ public class TravelFragment extends Fragment {
                         travel.setOrigin(origin);
                         travel.setDestination(destination);
 
-                        originTextView.setText(origin.getName());
-                        destinationTextView.setText(destination.getName());
+                        if (travel.getOrigin() != null) {
+                            String originStr = "From: ";
+                            if (travel.getOrigin().getName() != null) {
+                                originStr += travel.getOrigin().getName();
+                            }
+                            originTextView.setText(originStr);
+                        } else {
+                            originTextView.setText("From: ");
+                        }
+                        if (travel.getDestination() != null) {
+                            String destinationStr = "To: ";
+                            if (travel.getDestination().getName() != null) {
+                                destinationStr += travel.getDestination().getName();
+                            }
+                            destinationTextView.setText(destinationStr);
+                        } else {
+                            destinationTextView.setText("To: ");
+                        }
 
                         if (onTravelEditListener != null) {
                             onTravelEditListener.onTravelEdit(travel);

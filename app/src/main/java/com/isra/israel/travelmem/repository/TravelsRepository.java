@@ -40,6 +40,10 @@ public class TravelsRepository {
                 if (response.isSuccessful()) {
                     HashMap<String, Travel> body = response.body();
 
+                    if (body == null) {
+                        return;
+                    }
+
                     ArrayList<Travel> travels = new ArrayList<>();
                     for (Map.Entry<String, Travel> entry : body.entrySet()) {
                         Travel travel = entry.getValue();
