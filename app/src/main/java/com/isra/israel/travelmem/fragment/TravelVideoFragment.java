@@ -4,9 +4,11 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.VideoView;
@@ -120,16 +122,31 @@ public class TravelVideoFragment extends Fragment {
             });
         }
 
-        view.findViewById(R.id.f_travel_video_b_delete).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.f_travel_video_ib_more_options).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO delete actual file. only do this when unique file name generation is implemented
+                // TODO delete actual file. But only when unique file name generation is implemented
 
-                onTravelVideoEditListener.onTravelVideoEdit(null);
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .remove(TravelVideoFragment.this)
-                        .commit();
-                getActivity().getSupportFragmentManager().popBackStack();
+                PopupMenu popupMenu = new PopupMenu(getActivity(), v);
+                popupMenu.getMenuInflater().inflate(R.menu.menu_f_travel_video_more_options, popupMenu.getMenu());
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        int id = item.getItemId();
+                        switch (id) {
+                            case R.id.m_f_travel_video_more_options_delete: {
+                                onTravelVideoEditListener.onTravelVideoEdit(null);
+                                getActivity().getSupportFragmentManager().beginTransaction()
+                                        .remove(TravelVideoFragment.this)
+                                        .commit();
+                                getActivity().getSupportFragmentManager().popBackStack();
+                            } break;
+                        }
+
+                        return true;
+                    }
+                });
+                popupMenu.show();
             }
         });
 

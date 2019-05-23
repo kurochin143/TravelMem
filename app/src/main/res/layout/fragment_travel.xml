@@ -38,7 +38,7 @@
                     android:id="@+id/f_travel_i_view_on_map"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_map_24dp"
+                    android:src="@drawable/ic_map_64dp"
                     android:layout_centerHorizontal="true"/>
 
             </RelativeLayout>
