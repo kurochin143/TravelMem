@@ -10,11 +10,16 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,12 +28,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.libraries.places.api.Places;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.maps.android.SphericalUtil;
 import com.isra.israel.travelmem.R;
 import com.isra.israel.travelmem.adapter.TravelsAdapter;
@@ -44,7 +51,8 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class TravelsActivity extends AppCompatActivity {
+public class TravelsActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     private String uid;
     private String token;
@@ -62,9 +70,24 @@ public class TravelsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_travels);
 
+        // toolbar
         Toolbar toolbar = findViewById(R.id.a_travels_toolbar);
         setSupportActionBar(toolbar);
 
+        // nav
+        DrawerLayout drawer = findViewById(R.id.a_travels_dl_root);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = findViewById(R.id.a_travels_nav);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        TextView emailTextView = navigationView.getHeaderView(0).findViewById(R.id.l_nav_header_email);
+        emailTextView.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+
+        // init places
         Places.initialize(getApplicationContext(), getString(R.string.google_maps_api_key));
 
         final View disabledScreenView = findViewById(R.id.a_travels_v_disabled_screen);
@@ -134,7 +157,7 @@ public class TravelsActivity extends AppCompatActivity {
                 });
 
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.a_travels_fl_root, travelFragment)
+                        .add(R.id.a_travels_fl_fragment_root, travelFragment)
                         .addToBackStack(null)
                         .commit();
 
@@ -160,7 +183,7 @@ public class TravelsActivity extends AppCompatActivity {
                 });
 
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.a_travels_fl_root, travelFragment)
+                        .add(R.id.a_travels_fl_fragment_root, travelFragment)
                         .addToBackStack(null)
                         .commit();
             }
@@ -236,6 +259,17 @@ public class TravelsActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        // close the drawer instead of back press
+        DrawerLayout drawer = findViewById(R.id.a_travels_dl_root);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_app_bar, menu);
         return true;
@@ -247,7 +281,7 @@ public class TravelsActivity extends AppCompatActivity {
             case R.id.m_app_bar_settings: {
                 // open settings
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.a_travels_fl_root, new SettingsFragment())
+                        .add(R.id.a_travels_fl_fragment_root, new SettingsFragment())
                         .addToBackStack(null)
                         .commit();
             } break;
@@ -261,5 +295,17 @@ public class TravelsActivity extends AppCompatActivity {
         super.onDestroy();
 
         locationNotificationTimer.cancel();
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.m_nav_logout: {
+                LoginActivity.start(this);
+                finish();
+            } break;
+        }
+
+        return true;
     }
 }

@@ -24,4 +24,6 @@
     <string name="add_video">Add Video</string>
     <string name="sign_in">Sign In</string>
     <string name="register_u"><u>Register</u></string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 </resources>
