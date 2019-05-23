@@ -1,8 +1,19 @@
 package com.isra.israel.travelmem.activity;
 
+import android.Manifest;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.location.Location;
+import android.os.Build;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,10 +24,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.libraries.places.api.Places;
+import com.google.maps.android.SphericalUtil;
 import com.isra.israel.travelmem.R;
 import com.isra.israel.travelmem.adapter.TravelsAdapter;
 import com.isra.israel.travelmem.dao.FirebaseSessionSPDAO;
+import com.isra.israel.travelmem.dao.SettingsSPDAO;
+import com.isra.israel.travelmem.dao.TravelMemLocalCacheDAO;
 import com.isra.israel.travelmem.fragment.SettingsFragment;
 import com.isra.israel.travelmem.fragment.TravelFragment;
 import com.isra.israel.travelmem.model.Travel;
@@ -34,6 +52,10 @@ public class TravelsActivity extends AppCompatActivity {
     private TravelsViewModel travelsViewModel;
     private int openedTravelPosition;
     private Timer locationNotificationTimer = new Timer();
+    private FusedLocationProviderClient fusedLocationProviderClient;
+    public static final String NOTIFICATION_CHANNEL_ID = "id:1";
+    public static final String NOTIFICATION_NAME = "name:1";
+    private int notificationId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,6 +166,7 @@ public class TravelsActivity extends AppCompatActivity {
             }
         });
 
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         // TODO notification
         locationNotificationTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -151,12 +174,65 @@ public class TravelsActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        
+                        boolean isNotificationEnabled = SettingsSPDAO.isNotificationEnabled(TravelsActivity.this);
+                        if (!isNotificationEnabled) {
+                            return;
+                        }
+
+                        if (ContextCompat.checkSelfPermission(TravelsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                            // use user location as origin
+                            fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+                                @Override
+                                public void onSuccess(Location location) {
+                                    LatLng userLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+                                    ArrayList<Travel> travels = TravelMemLocalCacheDAO.getTravels(TravelsActivity.this, uid);
+                                    for (Travel travel : travels) {
+                                        if (travel.shouldNotify() == 1 && travel.getDestination() != null) {
+                                            LatLng destinationLatLng = travel.getDestination().getLatLng();
+
+                                            double distanceMeters = SphericalUtil.computeDistanceBetween(userLatLng, destinationLatLng);
+                                            if (distanceMeters <= 100.0) {
+
+                                                // set notify to false
+                                                travel.setShouldNotify(0);
+
+                                                travelsViewModel.updateTravel(uid, token, travel);
+                                                travelsAdapter.updateTravel(travel);
+
+                                                notifyDestinationReached();
+                                            }
+                                        }
+                                    }
+                                }
+                            });
+                        } else {
+                            ActivityCompat.requestPermissions(TravelsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                        }
                     }
                 });
             }
         }, 0, 1000);
 
+    }
+
+    private void notifyDestinationReached() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // channel
+            NotificationManager notificationManager = (NotificationManager) getSystemService(TravelsActivity.NOTIFICATION_SERVICE);
+            NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, NOTIFICATION_NAME, NotificationManager.IMPORTANCE_HIGH);
+            channel.setDescription("desc: This is an example notification");
+            notificationManager.createNotificationChannel(channel);
+
+            // builder
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(TravelsActivity.this, NOTIFICATION_CHANNEL_ID)
+                    .setPriority(NotificationCompat.PRIORITY_MAX)
+                    .setContentTitle("Destination reached")
+                    .setColor(Color.argb(255, 100, 100, 255))
+                    .setSmallIcon(R.drawable.ic_flag_32dp)
+                    .setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE);
+
+            notificationManager.notify(notificationId++, builder.build());
+        }
     }
 
     @Override

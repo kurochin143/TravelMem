@@ -53,6 +53,17 @@ public class TravelsAdapter extends RecyclerView.Adapter<TravelsAdapter.ViewHold
         notifyItemChanged(index);
     }
 
+    public void updateTravel(@NonNull Travel inTravel) {
+        for (int i = 0; i < travels.size(); ++i) {
+            Travel travel = travels.get(i);
+            if (travel.getId().equals(inTravel.getId())) {
+                travels.set(i, inTravel);
+                notifyItemChanged(i);
+                break;
+            }
+        }
+    }
+
     public void addTravel(@NonNull Travel travel) {
         travels.add(travel);
         notifyItemInserted(travels.size() - 1);
