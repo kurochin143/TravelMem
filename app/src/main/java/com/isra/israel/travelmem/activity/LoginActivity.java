@@ -40,7 +40,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.a_login_btn_register).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.a_login_t_register).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getSupportFragmentManager().beginTransaction()
@@ -50,12 +50,12 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        firebaseAuth.signInWithEmailAndPassword("test_email@testing.com", "test_password").addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                onRequestSignInComplete(task);
-            }
-        });
+//        firebaseAuth.signInWithEmailAndPassword("test_email@testing.com", "test_password").addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+//            @Override
+//            public void onComplete(@NonNull Task<AuthResult> task) {
+//                onRequestSignInComplete(task);
+//            }
+//        });
 
 //        firebaseAuth.addIdTokenListener(new FirebaseAuth.IdTokenListener() {
 //            @Override

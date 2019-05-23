@@ -9,55 +9,145 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <View
+            android:id="@+id/a_login_view_0"
+            android:layout_width="match_parent"
+            android:layout_height="320dp"
+            android:background="@color/colorPrimary"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/a_login_view_0"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:background="#D3D3D3"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="15dp">
 
-        <LinearLayout
+        <android.support.v7.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="5dp"
+            app:cardUseCompatPadding="true"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/a_login_t_0">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_vpn_key_black_64dp"
+                android:layout_margin="5dp"/>
+
+        </android.support.v7.widget.CardView>
+
+        <TextView
+            android:id="@+id/a_login_t_0"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="@string/sign_in"
+            android:textSize="25sp"
+            app:layout_constraintBottom_toTopOf="@+id/cardView"
+            tools:layout_editor_absoluteX="15dp"
+            android:gravity="center"
+            android:textColor="@color/white"/>
 
-            <EditText
-                android:id="@+id/a_login_et_email"
+        <android.support.v7.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="5dp"
+            app:cardUseCompatPadding="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_editor_absoluteX="15dp">
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/commonTextColor"
-                android:hint="@string/email"/>
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="20dp">
 
-            <EditText
-                android:id="@+id/a_login_et_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/commonTextColor"
-                android:hint="@string/password"/>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <Button
-                    android:id="@+id/a_login_btn_sign_in"
-                    android:layout_width="wrap_content"
+                <EditText
+                    android:id="@+id/a_login_et_email"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginStart="50dp"
-                    android:text="@string/sign_in"
-                    android:backgroundTint="@color/commonButtonColor"/>
+                    android:hint="@string/email"
+                    android:inputType="text"
+                    android:paddingTop="20dp"
+                    android:textColor="@color/commonTextColor" />
 
-                <Button
-                    android:id="@+id/a_login_btn_register"
-                    android:layout_width="wrap_content"
+                <EditText
+                    android:id="@+id/a_login_et_password"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="50dp"
-                    android:text="@string/register"
-                    android:backgroundTint="@color/commonButtonColor"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:hint="@string/password"
+                    android:inputType="text"
+                    android:textColor="@color/commonTextColor" />
 
-            </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-        </LinearLayout>
+                    <Button
+                        android:id="@+id/a_login_btn_register"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="50dp"
+                        android:backgroundTint="@color/commonButtonColor"
+                        android:text="@string/register"
+                        android:visibility="gone"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </RelativeLayout>
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
+
+                    <Button
+                        android:id="@+id/a_login_btn_sign_in"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:backgroundTint="@color/commonButtonColor"
+                        android:text="@string/sign_in"
+                        android:textAllCaps="false"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:textColor="@color/commonButtonTextColor"/>
+
+                    <TextView
+                        android:id="@+id/a_login_t_register"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginEnd="8dp"
+                        android:paddingBottom="15dp"
+                        android:text="@string/register_u"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/a_login_btn_sign_in" />
+
+                </android.support.constraint.ConstraintLayout>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
 
     </android.support.constraint.ConstraintLayout>
 
