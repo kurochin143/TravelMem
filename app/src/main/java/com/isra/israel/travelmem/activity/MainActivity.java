@@ -34,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
 //
 //        travels = TravelMemLocalCacheDAO.getTravels(this);
 
+
+
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
         finish();

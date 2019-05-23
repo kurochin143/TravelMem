@@ -7,12 +7,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.google.android.libraries.places.api.Places;
 import com.isra.israel.travelmem.R;
 import com.isra.israel.travelmem.adapter.TravelsAdapter;
 import com.isra.israel.travelmem.dao.FirebaseSessionSPDAO;
+import com.isra.israel.travelmem.fragment.SettingsFragment;
 import com.isra.israel.travelmem.fragment.TravelFragment;
 import com.isra.israel.travelmem.model.Travel;
 import com.isra.israel.travelmem.view_model.TravelsViewModel;
@@ -31,6 +36,9 @@ public class TravelsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_travels);
+
+        Toolbar toolbar = findViewById(R.id.a_travels_toolbar);
+        setSupportActionBar(toolbar);
 
         Places.initialize(getApplicationContext(), getString(R.string.google_maps_api_key));
 
@@ -117,5 +125,26 @@ public class TravelsActivity extends AppCompatActivity {
                         .commit();
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_app_bar, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.m_app_bar_settings: {
+                // open settings
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.a_travels_fl_root, new SettingsFragment())
+                        .addToBackStack(null)
+                        .commit();
+            } break;
+        }
+
+        return true;
     }
 }
