@@ -1,40 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:cardUseCompatPadding="true"
+        app:cardElevation="2dp"
+        app:cardCornerRadius="1dp">
 
-        <TextView
-            android:id="@+id/i_travel_t_name"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Travel Name"
-            android:textColor="@color/commonTextColor"
-            android:textSize="30sp"/>
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="10dp">
 
-        <TextView
-            android:id="@+id/i_travel_t_start_date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Start Date"
-            android:textColor="@color/commonTextColor"
-            android:visibility="gone"/>
+            <TextView
+                android:id="@+id/i_travel_t_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Travel Name"
+                android:textColor="@color/commonTextColor"
+                android:textSize="30sp"/>
 
-        <TextView
-            android:id="@+id/i_travel_t_end_date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="End Date"
-            android:textColor="@color/commonTextColor"
-            android:visibility="gone"/>
+            <TextView
+                android:id="@+id/i_travel_t_start_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Start Date"
+                android:textColor="@color/commonTextColor"
+                android:visibility="gone"/>
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/i_travel_t_end_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="End Date"
+                android:textColor="@color/commonTextColor"
+                android:visibility="gone"/>
 
+        </LinearLayout>
 
+    </android.support.v7.widget.CardView>
 
 </android.support.constraint.ConstraintLayout>

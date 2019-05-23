@@ -142,7 +142,7 @@ public class TravelsActivity extends AppCompatActivity {
         });
 
         // add travel button
-        findViewById(R.id.a_travels_b_add_travel).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.a_travels_fab_add_travel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // open travel fragment for creation
