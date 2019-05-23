@@ -247,27 +247,32 @@ public class TravelFragment extends Fragment {
         });
 
         // videos fragment
-        view.findViewById(R.id.f_travel_b_videos).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TravelVideosFragment travelVideosFragment = TravelVideosFragment.newInstance(travel.getVideos());
-                travelVideosFragment.setOnTravelVideosEditListener(new TravelVideosFragment.OnTravelVideosEditListener() {
-                    @Override
-                    public void onTravelVideosEditListener(ArrayList<TravelVideo> travelVideos) {
-                        travel.setVideos(travelVideos);
+        Button travelVideosButton = view.findViewById(R.id.f_travel_b_videos);
+        if (isCreating) {
+            travelVideosButton.setVisibility(View.GONE);
+        } else {
+            travelVideosButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    TravelVideosFragment travelVideosFragment = TravelVideosFragment.newInstance(travel.getVideos());
+                    travelVideosFragment.setOnTravelVideosEditListener(new TravelVideosFragment.OnTravelVideosEditListener() {
+                        @Override
+                        public void onTravelVideosEditListener(ArrayList<TravelVideo> travelVideos) {
+                            travel.setVideos(travelVideos);
 
-                        if (onTravelEditListener != null) {
-                            onTravelEditListener.onTravelEdit(travel);
+                            if (onTravelEditListener != null) {
+                                onTravelEditListener.onTravelEdit(travel);
+                            }
                         }
-                    }
-                });
+                    });
 
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .add(R.id.f_travel_fl_root, travelVideosFragment)
-                        .addToBackStack(null)
-                        .commit();
-            }
-        });
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .add(R.id.f_travel_fl_root, travelVideosFragment)
+                            .addToBackStack(null)
+                            .commit();
+                }
+            });
+        }
 
         // description
         final ViewSwitcher descriptionViewSwitcher = view.findViewById(R.id.f_travel_vs_description);
