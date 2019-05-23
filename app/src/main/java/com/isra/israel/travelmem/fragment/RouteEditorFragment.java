@@ -2,11 +2,8 @@ package com.isra.israel.travelmem.fragment;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.VectorDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -14,13 +11,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -30,11 +25,8 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.internal.ee;
 import com.google.android.libraries.places.widget.Autocomplete;
-import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
-import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.maps.android.PolyUtil;
-import com.google.maps.android.ui.IconGenerator;
 import com.isra.israel.travelmem.R;
 import com.isra.israel.travelmem.api.GoogleDirectionsAPIDAO;
 import com.isra.israel.travelmem.model.directions.GoogleDirectionsResult;
@@ -45,7 +37,6 @@ import com.isra.israel.travelmem.model.directions.Step;
 import com.isra.israel.travelmem.static_helpers.BitmapStaticHelper;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import retrofit2.Call;
@@ -66,6 +57,9 @@ public class RouteEditorFragment extends Fragment {
     private ArrayList<Polyline> polylines = new ArrayList<>();
     private Marker originMarker;
     private Marker destinationMarker;
+    private ArrayList<String> waypoints = new ArrayList<>();
+    private ArrayList<Marker> waypointMarkers = new ArrayList<>();
+    private Marker selectedWaypointMarker;
     private Point origin;
     private Point destination;
     private Call<GoogleDirectionsResult> getDirectionCall;
@@ -121,6 +115,14 @@ public class RouteEditorFragment extends Fragment {
                 RouteEditorFragment.this.googleMap = googleMap;
 
                 if (route != null) {
+                    if (route.getLegs().size() > 1) {
+                        for (Leg leg : route.getLegs()) {
+                            LatLng endLocation = leg.getEndLocation();
+                            waypoints.add(endLocation.latitude + "," + endLocation.longitude);
+                        }
+                        waypoints.remove(waypoints.size() - 1); // remove last one
+                    }
+
                     drawRoute(route);
                 }
 
@@ -158,12 +160,16 @@ public class RouteEditorFragment extends Fragment {
                 origin.setName(place.getAddress());
                 origin.setLatLng(place.getLatLng());
 
+                waypoints.clear(); // clear waypoints
+
                 requestDirection();
             } else if (requestCode == RC_SEARCH_DESTINATION) {
                 Place place = Autocomplete.getPlaceFromIntent(intent);
 
                 destination.setName(place.getAddress());
                 destination.setLatLng(place.getLatLng());
+
+                waypoints.clear(); // clear waypoints
 
                 requestDirection();
             }
@@ -180,10 +186,22 @@ public class RouteEditorFragment extends Fragment {
             return;
         }
 
+        String waypointsStr = null;
+        if (waypoints.size() != 0) {
+            StringBuilder waypointsStrB = new StringBuilder();
+            for (String waypoint : waypoints) {
+                waypointsStrB.append(waypoint);
+                waypointsStrB.append("|");
+            }
+            waypointsStrB.setLength(waypointsStrB.length() - 1);
+            waypointsStr = waypointsStrB.toString();
+        }
+
         getDirectionCall = GoogleDirectionsAPIDAO.apiService.getDirection(
                 getString(R.string.google_maps_api_key),
                 origin.getLatLng().latitude + "," + origin.getLatLng().longitude,
-                destination.getLatLng().latitude + "," + destination.getLatLng().longitude
+                destination.getLatLng().latitude + "," + destination.getLatLng().longitude,
+                waypointsStr
         );
         getDirectionCall.enqueue(new Callback<GoogleDirectionsResult>() {
             @Override
@@ -230,16 +248,22 @@ public class RouteEditorFragment extends Fragment {
             destinationMarker.remove();
         }
 
+        // clear waypoint markers
+        for (Marker marker : waypointMarkers) {
+            marker.remove();
+        }
+
+        // forget old selected waypoint marker
+        selectedWaypointMarker = null;
+
         if (routes.size() == 0) {
             return;
         }
 
         this.route = routes.get(0);
 
-        // TODO MEDIUM how to query for multiple routes
-        // TODO MEDIUM route selector
-        ArrayList<PolylineOptions> polylineOptionsList = new ArrayList<>();
-
+        // TODO LOW how to query for multiple routes
+        // TODO LOW route selector
         for (Route route : routes) {
             drawRoute(route);
         }
@@ -257,11 +281,17 @@ public class RouteEditorFragment extends Fragment {
 
         // TODO HIGH draw circle
         // TODO CRITICAL waypoints
-        ArrayList<CircleOptions> circleOptionsList = new ArrayList<>();
+        ArrayList<MarkerOptions> waypointMarkerOptions = new ArrayList<>();
 
         PolylineOptions polylineOptions = new PolylineOptions();
         polylineOptions.color(Color.BLUE);
-        for (Leg leg : route.getLegs()) {
+        for (int i = 0; i < route.getLegs().size(); ++i) {
+            Leg leg = route.getLegs().get(i);
+            waypointMarkerOptions.add(new MarkerOptions()
+                    .position(leg.getEndLocation())
+                    .title(i + ": " + leg.getEndAddress())
+            );
+
             for (Step step : leg.getSteps()) {
                 List<LatLng> polylinePoints = PolyUtil.decode(step.getPolyline().getPoints());
                 for (LatLng polylinePoint : polylinePoints) {
@@ -270,8 +300,14 @@ public class RouteEditorFragment extends Fragment {
             }
         }
 
-        for (CircleOptions circleOptions : circleOptionsList) {
-            googleMap.addCircle(circleOptions);
+        // do not add marker for the last one
+        for (int i = 0; i < waypointMarkerOptions.size() - 1; ++i) {
+            MarkerOptions markerOptions = waypointMarkerOptions.get(i);
+
+            // create marker
+            Marker waypointMarker = googleMap.addMarker(markerOptions);
+            waypointMarker.setTag(i);
+            waypointMarkers.add(waypointMarker);
         }
 
         polylines.add(googleMap.addPolyline(polylineOptions));
@@ -296,6 +332,47 @@ public class RouteEditorFragment extends Fragment {
                     .icon(BitmapDescriptorFactory.fromBitmap(destinationMarkerBitmap))
             );
         }
+
+        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                for (Marker waypointMarker : waypointMarkers) {
+                    if (waypointMarker.getId().equals(marker.getId())) {
+                        selectedWaypointMarker = waypointMarker;
+                        waypointMarker.showInfoWindow();
+                        return true;
+                    }
+                }
+
+                return false; // FIXME this should click map instead? if not then unselect waypoint here
+            }
+        });
+
+        googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                selectedWaypointMarker = null;
+            }
+        });
+
+        // long click
+        googleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(LatLng latLng) {
+                String latLngStr = latLng.latitude + "," + latLng.longitude;
+                if (selectedWaypointMarker != null) {
+                    // insert waypoint after the selected waypointMarker
+                    int index = (int)selectedWaypointMarker.getTag();
+
+                    waypoints.add(index + 1, latLngStr);
+                } else {
+                    // add waypoint after the origin
+                    waypoints.add(latLngStr);
+                }
+
+                requestDirection();
+            }
+        });
     }
 
     public void setOnRouteEditListener(OnRouteEditListener onRouteEditedListener) {
