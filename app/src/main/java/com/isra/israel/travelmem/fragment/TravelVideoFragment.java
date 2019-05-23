@@ -65,6 +65,7 @@ public class TravelVideoFragment extends Fragment {
                 @Override
                 public void onPrepared(MediaPlayer mp) {
                     videoDuration = videoView.getDuration();
+                    videoView.seekTo(1);
 
                     final SeekBar videoPositionSeekBar = view.findViewById(R.id.f_travel_video_sb_video_position);
                     videoPositionSeekBar.setMax(videoDuration);
@@ -91,6 +92,9 @@ public class TravelVideoFragment extends Fragment {
                     videoSeekBarUpdateTimer.scheduleAtFixedRate(new TimerTask() {
                         @Override
                         public void run() {
+                            if (getActivity() == null) { // detached after timer is fired and waiting
+                                return;
+                            }
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {

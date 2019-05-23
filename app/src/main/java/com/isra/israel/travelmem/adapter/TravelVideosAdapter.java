@@ -1,8 +1,6 @@
 package com.isra.israel.travelmem.adapter;
 
 import android.graphics.Bitmap;
-import android.media.MediaMetadataRetriever;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,7 +12,6 @@ import com.isra.israel.travelmem.R;
 import com.isra.israel.travelmem.model.TravelVideo;
 import com.isra.israel.travelmem.static_helpers.VideoStaticHelper;
 
-import java.io.File;
 import java.util.ArrayList;
 
 public class TravelVideosAdapter extends RecyclerView.Adapter<TravelVideosAdapter.ViewHolder> {
@@ -35,7 +32,7 @@ public class TravelVideosAdapter extends RecyclerView.Adapter<TravelVideosAdapte
             holder.imageView.setImageURI(null);
         } else {
             // TODO MEDIUM do this async because it takes some time
-            Bitmap frameAtHalf = VideoStaticHelper.getFrameAtHalf(holder.itemView.getContext(), travelVideo.getUri());
+            Bitmap frameAtHalf = VideoStaticHelper.getFrame1(holder.itemView.getContext(), travelVideo.getUri());
 
             holder.imageView.setImageBitmap(frameAtHalf);
         }
@@ -43,7 +40,7 @@ public class TravelVideosAdapter extends RecyclerView.Adapter<TravelVideosAdapte
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onTravelVideoClickListener.onTravelVideoClick(travelVideo, holder.getAdapterPosition());
+                onTravelVideoClickListener.onTravelVideoClick(travelVideo, holder.getAdapterPosition(), holder.imageView);
             }
         });
     }
@@ -93,6 +90,6 @@ public class TravelVideosAdapter extends RecyclerView.Adapter<TravelVideosAdapte
     }
 
     public interface OnTravelVideoClickListener {
-        void onTravelVideoClick(TravelVideo travelVideo, int position);
+        void onTravelVideoClick(TravelVideo travelVideo, int position, ImageView imageView);
     }
 }

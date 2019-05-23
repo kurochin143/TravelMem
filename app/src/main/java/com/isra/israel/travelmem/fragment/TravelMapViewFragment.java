@@ -279,7 +279,7 @@ public class TravelMapViewFragment extends Fragment {
     }
 
     private void addTravelVideoMarker(final TravelVideo travelVideo) {
-        Bitmap bitmap = VideoStaticHelper.getFrameAtHalf(getContext(), travelVideo.getUri());
+        Bitmap bitmap = VideoStaticHelper.getFrame1(getContext(), travelVideo.getUri());
         Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, 100, 100, false);
         final Marker marker = googleMap.addMarker(new MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromBitmap(scaledBitmap))

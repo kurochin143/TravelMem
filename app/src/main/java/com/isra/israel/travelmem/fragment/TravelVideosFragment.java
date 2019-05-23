@@ -4,9 +4,13 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.Fade;
+import android.transition.Slide;
+import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.isra.israel.travelmem.R;
 import com.isra.israel.travelmem.adapter.TravelVideosAdapter;
@@ -45,7 +49,7 @@ public class TravelVideosFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_travel_videos, container, false);
+        final View view = inflater.inflate(R.layout.fragment_travel_videos, container, false);
 
         ArrayList<TravelVideo> travelVideos = getArguments().getParcelableArrayList(ARG_TRAVEL_VIDEOS);
         if (travelVideos == null) {
@@ -72,7 +76,7 @@ public class TravelVideosFragment extends Fragment {
         travelVideosAdapter = new TravelVideosAdapter();
         travelVideosAdapter.setOnTravelVideoClickListener(new TravelVideosAdapter.OnTravelVideoClickListener() {
             @Override
-            public void onTravelVideoClick(TravelVideo travelVideo, int position) {
+            public void onTravelVideoClick(TravelVideo travelVideo, int position, ImageView imageView) {
                 openedTravelVideoPosition = position;
 
                 // open travel video fragment
