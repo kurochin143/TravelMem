@@ -24,7 +24,8 @@
         <activity android:name=".activity.TestContextActivity" />
         <activity android:name=".activity.LoginActivity" />
         <activity android:name=".activity.TravelsActivity"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/AppTheme.NoActionBar"/>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
