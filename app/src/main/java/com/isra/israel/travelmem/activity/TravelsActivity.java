@@ -3,13 +3,13 @@ package com.isra.israel.travelmem.activity;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -42,6 +42,10 @@ public class TravelsActivity extends AppCompatActivity {
 
         Places.initialize(getApplicationContext(), getString(R.string.google_maps_api_key));
 
+        final View disabledScreenView = findViewById(R.id.a_travels_v_disabled_screen);
+        final SwipeRefreshLayout travelsSRL = findViewById(R.id.a_travels_srl_travels);
+        travelsSRL.setRefreshing(true);
+
         // setup recycler view
         RecyclerView recyclerView = findViewById(R.id.a_travels_r_travels);
         recyclerView.setHasFixedSize(true);
@@ -62,6 +66,17 @@ public class TravelsActivity extends AppCompatActivity {
                 }
 
                 travelsAdapter.setTravels(travels);
+
+                travelsSRL.setRefreshing(false);
+                disabledScreenView.setVisibility(View.GONE);
+            }
+        });
+
+        travelsSRL.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                travelsViewModel.reloadData(uid, token);
+                disabledScreenView.setVisibility(View.VISIBLE);
             }
         });
 
@@ -125,6 +140,9 @@ public class TravelsActivity extends AppCompatActivity {
                         .commit();
             }
         });
+
+        // TODO
+
     }
 
     @Override

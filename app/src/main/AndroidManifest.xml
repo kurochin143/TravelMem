@@ -16,10 +16,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <service
-            android:name=".service.NotificationService"
-            android:enabled="true"
-            android:exported="false"></service>
-        <service
             android:name=".service.SyncService"
             android:enabled="true"
             android:exported="false" />

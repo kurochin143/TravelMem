@@ -23,7 +23,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
-                app:popupTheme="@style/AppTheme.PopupOverlay" />
+                app:popupTheme="@style/AppTheme.PopupOverlay"
+                app:title="@string/app_name"/>
 
         </android.support.design.widget.AppBarLayout>
 
@@ -34,13 +35,20 @@
             app:layout_constraintTop_toBottomOf="@id/a_travels_abl_0"
             app:layout_constraintBottom_toBottomOf="parent">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/a_travels_r_travels"
+            <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/a_travels_srl_travels"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                tools:listitem="@layout/item_travel"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/a_travels_b_add_travel"/>
+                app:layout_constraintBottom_toTopOf="@id/a_travels_b_add_travel">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/a_travels_r_travels"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    tools:listitem="@layout/item_travel"/>
+
+            </android.support.v4.widget.SwipeRefreshLayout>
 
             <!--TODO use floating button-->
 
@@ -49,12 +57,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Add Travel"
-                app:layout_constraintTop_toBottomOf="@id/a_travels_r_travels"
+                app:layout_constraintTop_toBottomOf="@id/a_travels_srl_travels"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:backgroundTint="@color/commonButtonColor"/>
 
         </android.support.constraint.ConstraintLayout>
 
     </android.support.constraint.ConstraintLayout>
+
+    <View
+        android:id="@+id/a_travels_v_disabled_screen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#55000000"
+        android:clickable="true"
+        android:focusable="true"/>
 
 </FrameLayout>
