@@ -60,6 +60,10 @@ public class Travel implements Parcelable {
     @Expose
     private long lastUpdatedTime;
 
+    @SerializedName("shouldNotify")
+    @Expose
+    private int shouldNotify;
+
     public Travel() {
 
     }
@@ -77,6 +81,7 @@ public class Travel implements Parcelable {
         description = in.readString();
         creationTime = in.readLong();
         lastUpdatedTime = in.readLong();
+        shouldNotify = in.readInt();
     }
 
     public static final Creator<Travel> CREATOR = new Creator<Travel>() {
@@ -187,6 +192,14 @@ public class Travel implements Parcelable {
         this.lastUpdatedTime = lastUpdatedTime;
     }
 
+    public int shouldNotify() {
+        return shouldNotify;
+    }
+
+    public void setShouldNotify(int shouldNotify) {
+        this.shouldNotify = shouldNotify;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -206,5 +219,6 @@ public class Travel implements Parcelable {
         dest.writeString(description);
         dest.writeLong(creationTime);
         dest.writeLong(lastUpdatedTime);
+        dest.writeInt(shouldNotify);
     }
 }
