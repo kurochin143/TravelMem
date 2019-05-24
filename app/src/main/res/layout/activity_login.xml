@@ -44,10 +44,20 @@
             app:layout_constraintBottom_toTopOf="@id/a_login_t_0">
 
             <ImageView
+                android:id="@+id/a_login_i_sign_in_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_vpn_key_black_64dp"
                 android:layout_margin="5dp"/>
+
+            <ProgressBar
+                android:id="@+id/a_login_pb_signing_in"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleY="1.3"
+                android:scaleX="1.3"
+                android:layout_gravity="center"
+                android:visibility="invisible"/>
 
         </android.support.v7.widget.CardView>
 

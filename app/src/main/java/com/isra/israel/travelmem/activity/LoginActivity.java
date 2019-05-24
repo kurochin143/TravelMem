@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -22,6 +24,8 @@ import com.isra.israel.travelmem.fragment.RegisterFragment;
 public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+    private ProgressBar signingInProgressBar;
+    private ImageView signInIconImageView;
     private EditText emailEditText;
     private EditText passwordEditText;
 
@@ -33,9 +37,15 @@ public class LoginActivity extends AppCompatActivity {
         emailEditText = findViewById(R.id.a_login_et_email);
         passwordEditText = findViewById(R.id.a_login_et_password);
 
+        signingInProgressBar = findViewById(R.id.a_login_pb_signing_in);
+        signInIconImageView = findViewById(R.id.a_login_i_sign_in_icon);
+
         findViewById(R.id.a_login_btn_sign_in).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                signingInProgressBar.setVisibility(View.VISIBLE);
+                signInIconImageView.setVisibility(View.INVISIBLE);
+
                 signInWithEmailAndPassword();
             }
         });
@@ -102,6 +112,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void onRequestSignInComplete(@NonNull Task<AuthResult> task) {
+
+        signingInProgressBar.setVisibility(View.INVISIBLE);
+        signInIconImageView.setVisibility(View.VISIBLE);
 
         if (task.isSuccessful()) {
             AuthResult authResult = task.getResult();
