@@ -23,8 +23,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Travel Name"
-                android:textColor="@color/commonTextColor"
-                android:textSize="30sp"/>
+                android:textColor="@color/colorPrimary"
+                android:textSize="30sp" />
 
             <TextView
                 android:id="@+id/i_travel_t_start_date"
