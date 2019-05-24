@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -35,6 +36,7 @@ public class RegisterFragment extends Fragment {
         final EditText lastNameEditText = view.findViewById(R.id.f_register_et_last_name);
         final EditText emailEditText = view.findViewById(R.id.f_register_et_email);
         final EditText passwordEditText = view.findViewById(R.id.f_register_et_password);
+        final ProgressBar progressBar = view.findViewById(R.id.f_register_pb_registering);
 
         view.findViewById(R.id.f_register_b_register).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,9 +52,13 @@ public class RegisterFragment extends Fragment {
                 String passwordStr = passwordEditText.getText().toString();
                 // TODO check valid password
 
+                progressBar.setVisibility(View.VISIBLE);
+
                 firebaseAuth.createUserWithEmailAndPassword(emailStr, passwordStr).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
+                        progressBar.setVisibility(View.GONE);
+
                         if (task.isSuccessful()) {
                             Toast.makeText(getContext(), "Registration successful", Toast.LENGTH_LONG).show();
                             getActivity().getSupportFragmentManager()
