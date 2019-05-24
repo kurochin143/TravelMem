@@ -1,5 +1,7 @@
 # TravelMem App for Android
 
+<img src=https://raw.githubusercontent.com/kurochin143/TravelMem/master/Screenshot_TravelMap.png width="300">
+
 ### What problem does this app solve?
 * It will allow the user to look for places to travel to.
 * Can plan travel.
