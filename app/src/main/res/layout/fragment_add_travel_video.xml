@@ -32,7 +32,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/select_video"
-                android:backgroundTint="@color/commonButtonColor"/>
+                android:backgroundTint="@color/commonButtonColor"
+                android:textColor="@color/commonButtonTextColor"/>
 
             <EditText
                 android:id="@+id/f_add_travel_video_et_latitude"
@@ -75,7 +76,8 @@
                 android:text="@string/accept"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:backgroundTint="@color/commonButtonColor"/>
+                android:backgroundTint="@color/commonButtonColor"
+                android:textColor="@color/commonButtonTextColor"/>
 
             <Button
                 android:id="@+id/f_add_travel_video_b_cancel"
@@ -84,7 +86,8 @@
                 android:text="@string/cancel"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:backgroundTint="@color/commonButtonColor" />
+                android:backgroundTint="@color/commonButtonColor"
+                android:textColor="@color/commonButtonTextColor"/>
 
         </android.support.constraint.ConstraintLayout>
 

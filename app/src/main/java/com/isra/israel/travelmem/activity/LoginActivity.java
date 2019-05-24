@@ -136,7 +136,7 @@ public class LoginActivity extends AppCompatActivity {
                                 finish();
                             }
                         } else {
-                            Toast toast = Toast.makeText(LoginActivity.this, "Sign in failed", Toast.LENGTH_LONG);
+                            Toast toast = Toast.makeText(LoginActivity.this, "Sign in failed. " + task.getException().getMessage(), Toast.LENGTH_LONG);
                             toast.show();
                         }
                     }
@@ -146,12 +146,8 @@ public class LoginActivity extends AppCompatActivity {
             Toast toast = Toast.makeText(LoginActivity.this, "Sign in success", Toast.LENGTH_LONG);
             toast.show();
         } else {
-            Toast toast = Toast.makeText(LoginActivity.this, "Sign in failed", Toast.LENGTH_LONG);
+            Toast toast = Toast.makeText(LoginActivity.this, "Sign in failed. " + task.getException().getMessage(), Toast.LENGTH_LONG);
             toast.show();
-
-            if (task.getException() != null) {
-                task.getException().printStackTrace();
-            }
         }
     }
 
