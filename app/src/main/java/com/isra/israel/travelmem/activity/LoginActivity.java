@@ -61,12 +61,12 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-//        firebaseAuth.signInWithEmailAndPassword("test_email@testing.com", "test_password").addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-//            @Override
-//            public void onComplete(@NonNull Task<AuthResult> task) {
-//                onRequestSignInComplete(task);
-//            }
-//        });
+        firebaseAuth.signInWithEmailAndPassword("test_email@testing.com", "test_password").addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                onRequestSignInComplete(task);
+            }
+        });
 
 //        firebaseAuth.addIdTokenListener(new FirebaseAuth.IdTokenListener() {
 //            @Override

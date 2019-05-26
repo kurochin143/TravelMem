@@ -38,6 +38,7 @@ import com.google.android.libraries.places.api.Places;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.maps.android.SphericalUtil;
 import com.isra.israel.travelmem.R;
+import com.isra.israel.travelmem.TravelMemApp;
 import com.isra.israel.travelmem.adapter.TravelsAdapter;
 import com.isra.israel.travelmem.dao.FirebaseSessionSPDAO;
 import com.isra.israel.travelmem.dao.SettingsSPDAO;
@@ -46,10 +47,13 @@ import com.isra.israel.travelmem.fragment.SettingsFragment;
 import com.isra.israel.travelmem.fragment.TravelFragment;
 import com.isra.israel.travelmem.model.Travel;
 import com.isra.israel.travelmem.view_model.TravelsViewModel;
+import com.isra.israel.travelmem.view_model.factory.TravelsVMFactory;
 
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import javax.inject.Inject;
 
 public class TravelsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -57,6 +61,10 @@ public class TravelsActivity extends AppCompatActivity
     private String uid;
     private String token;
     private TravelsAdapter travelsAdapter;
+
+    @Inject
+    TravelsVMFactory travelsVMFactory;
+
     private TravelsViewModel travelsViewModel;
     private int openedTravelPosition;
     private Timer locationNotificationTimer = new Timer();
@@ -101,12 +109,13 @@ public class TravelsActivity extends AppCompatActivity
         travelsAdapter = new TravelsAdapter();
         recyclerView.setAdapter(travelsAdapter);
 
-        travelsViewModel = ViewModelProviders.of(this).get(TravelsViewModel.class);
+        ((TravelMemApp)getApplication()).createTravelMemSubComponent().inject(this);
+        travelsViewModel = ViewModelProviders.of(this, travelsVMFactory).get(TravelsViewModel.class);
         uid = FirebaseSessionSPDAO.getUid(this);
         token = FirebaseSessionSPDAO.getIdToken(this);
 
         // travels observer
-        travelsViewModel.getTravelsLiveData(this, uid, token).observe(this, new Observer<ArrayList<Travel>>() {
+        travelsViewModel.getTravelsLiveData().observe(this, new Observer<ArrayList<Travel>>() {
             @Override
             public void onChanged(@Nullable ArrayList<Travel> travels) {
                 if (travels == null) {
@@ -120,11 +129,38 @@ public class TravelsActivity extends AppCompatActivity
             }
         });
 
+        travelsViewModel.getTravels(uid, token);
+
+        // refresh travels
         travelsSRL.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                travelsViewModel.reloadData(uid, token);
+                travelsViewModel.getTravels(uid, token);
                 disabledScreenView.setVisibility(View.VISIBLE);
+            }
+        });
+
+        // remove travel observer
+        travelsViewModel.getRemovedTravelLiveData().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable String s) {
+                if (s == null) {
+                    return;
+                }
+
+                travelsAdapter.removeTravel(s);
+            }
+        });
+
+        // update travel observer
+        travelsViewModel.getUpdatedTravelLiveData().observe(this, new Observer<Travel>() {
+            @Override
+            public void onChanged(@Nullable Travel travel) {
+                if (travel == null) {
+                    return;
+                }
+
+                travelsAdapter.updateTravel(travel);
             }
         });
 
@@ -143,7 +179,6 @@ public class TravelsActivity extends AppCompatActivity
                     public void onTravelEdit(Travel travel) {
                         travel.setLastUpdatedTime(System.currentTimeMillis());
                         travelsViewModel.updateTravel(uid, token, travel);
-                        travelsAdapter.setTravelAt(travel, openedTravelPosition);
                     }
                 });
 
@@ -151,8 +186,7 @@ public class TravelsActivity extends AppCompatActivity
                 travelFragment.setOnTravelDeleteListener(new TravelFragment.OnTravelDeleteListener() {
                     @Override
                     public void onTravelDelete(String id) {
-                        travelsViewModel.removeTravel(uid, token, id);
-                        travelsAdapter.removeTravel(id);
+                        travelsViewModel.removeTravel(uid, id, token);
                     }
                 });
 
@@ -162,6 +196,18 @@ public class TravelsActivity extends AppCompatActivity
                         .addToBackStack(null)
                         .commit();
 
+            }
+        });
+
+        // add travel observer
+        travelsViewModel.getAddedTravelLiveData().observe(this, new Observer<Travel>() {
+            @Override
+            public void onChanged(@Nullable Travel travel) {
+                if (travel == null) {
+                    return;
+                }
+
+                travelsAdapter.addTravel(travel);
             }
         });
 
@@ -177,9 +223,7 @@ public class TravelsActivity extends AppCompatActivity
                     @Override
                     public void onTravelCreate(final Travel travel) {
                         travel.setCreationTime(System.currentTimeMillis());
-
                         travelsViewModel.addTravel(uid, token, travel);
-                        travelsAdapter.addTravel(travel);
                     }
                 });
 
@@ -191,6 +235,8 @@ public class TravelsActivity extends AppCompatActivity
             }
         });
 
+        // TODO create persistent service
+        // location notification
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         // TODO notification
         locationNotificationTimer.scheduleAtFixedRate(new TimerTask() {
@@ -221,7 +267,7 @@ public class TravelsActivity extends AppCompatActivity
                                                 // set notify to false
                                                 travel.setShouldNotify(0);
 
-                                                travelsViewModel.updateTravel(uid, token, travel);
+                                                //travelsViewModel.updateTravel(uid, token, travel);
                                                 travelsAdapter.updateTravel(travel);
 
                                                 notifyDestinationReached();
