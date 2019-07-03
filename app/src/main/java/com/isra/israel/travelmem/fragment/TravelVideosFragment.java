@@ -1,12 +1,10 @@
 package com.isra.israel.travelmem.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.transition.Fade;
-import android.transition.Slide;
-import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -120,13 +118,12 @@ public class TravelVideosFragment extends Fragment {
                     public void onTravelVideoAdd(TravelVideo travelVideo) {
                         if (travelVideo != null) {
                             travelVideosAdapter.addTravelVideo(travelVideo);
-
                             onTravelVideosEditListener.onTravelVideosEditListener(travelVideosAdapter.getTravelVideos());
                         }
                     }
                 });
 
-                getActivity().getSupportFragmentManager().beginTransaction()
+                getChildFragmentManager().beginTransaction()
                         .setCustomAnimations(android.R.anim.slide_in_left,0, 0, android.R.anim.slide_out_right)
                         .add(R.id.f_travel_videos_fl_root, addTravelVideoFragment)
                         .addToBackStack(null)
@@ -137,8 +134,20 @@ public class TravelVideosFragment extends Fragment {
         return view;
     }
 
-    public void setOnTravelVideosEditListener(OnTravelVideosEditListener l) {
-        onTravelVideosEditListener = l;
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if (getParentFragment() instanceof OnTravelVideosEditListener) {
+            onTravelVideosEditListener = (OnTravelVideosEditListener) context;
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        onTravelVideosEditListener = null;
     }
 
     public interface OnTravelVideosEditListener {

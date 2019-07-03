@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragment.AddTravelFragment"
+    android:background="#FFFFFF"
+    android:id="@+id/f_add_travel_fl_root"
+    android:clickable="true"
+    android:focusable="true">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="15dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/f_add_travel_c_0">
+
+            <EditText
+                android:id="@+id/f_add_travel_et_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:imeOptions="actionDone"
+                android:hint="@string/name"
+                android:textSize="20sp"
+                android:textColor="@color/commonTextColor"/>
+
+            <TextView
+                android:id="@+id/f_add_travel_t_start_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Start Date"
+                android:textSize="20sp"
+                android:textColor="@color/commonTextColor"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/f_add_travel_t_end_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="End Date"
+                android:textSize="20sp"
+                android:textColor="@color/commonTextColor"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/f_add_travel_t_origin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Origin"
+                android:textSize="15sp"
+                android:textColor="@color/commonTextColor"/>
+
+            <TextView
+                android:id="@+id/f_add_travel_t_destination"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Destination"
+                android:textSize="15sp"
+                android:textColor="@color/commonTextColor"/>
+
+            <Button
+                android:id="@+id/f_add_travel_b_route"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/route"
+                android:backgroundTint="@color/commonButtonColor"
+                android:textColor="@color/commonButtonTextColor"/>
+
+            <Switch
+                android:id="@+id/f_add_travel_s_notify"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Notify "/>
+
+            <TextView
+                android:id="@+id/f_travel_t_created_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="00/00/0000"
+                android:textSize="20sp"
+                android:textColor="@color/commonTextColor"
+                android:visibility="gone"/>
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <EditText
+                    android:id="@+id/f_add_travel_et_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:imeOptions="actionDone"
+                    android:hint="@string/description"
+                    android:textColor="@color/commonTextColor"/>
+
+            </ScrollView>
+
+        </LinearLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/f_add_travel_c_0"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <Button
+                android:id="@+id/f_add_travel_b_save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/save"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:backgroundTint="@color/commonButtonColor"
+                android:textColor="@color/commonButtonTextColor"/>
+
+            <Button
+                android:id="@+id/f_add_travel_b_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/cancel"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:backgroundTint="@color/commonButtonColor"
+                android:textColor="@color/commonButtonTextColor"/>
+
+        </android.support.constraint.ConstraintLayout>
+
+
+
+    </android.support.constraint.ConstraintLayout>
+
+</FrameLayout>

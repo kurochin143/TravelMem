@@ -1,6 +1,7 @@
 package com.isra.israel.travelmem.fragment;
 
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.VectorDrawable;
@@ -41,11 +42,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import icepick.Icepick;
+import icepick.State;
+
 public class TravelMapViewFragment extends Fragment {
 
     private static final String ARG_TRAVEL = "travel";
 
-    private Travel travel;
+    @State
+    Travel travel;
 
     private GoogleMap googleMap;
 
@@ -87,6 +92,9 @@ public class TravelMapViewFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if (savedInstanceState != null) {
+            Icepick.restoreInstanceState(this, savedInstanceState);
+        }
 
         if (travel.getVideos() != null) {
             boolean somethingRemoved = false;
@@ -278,6 +286,28 @@ public class TravelMapViewFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if (getParentFragment() instanceof OnTravelEditListener) {
+            onTravelEditListener = (OnTravelEditListener) getParentFragment();
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        onTravelEditListener = null;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Icepick.saveInstanceState(this, outState);
+    }
+
     private void addTravelVideoMarker(final TravelVideo travelVideo) {
         Bitmap bitmap = VideoStaticHelper.getFrame1(getContext(), travelVideo.getUri());
         Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, 100, 100, false);
@@ -289,10 +319,6 @@ public class TravelMapViewFragment extends Fragment {
         marker.setTag(travelVideo);
 
         markers.add(marker);
-    }
-
-    public void setOnTravelEditListener(OnTravelEditListener l) {
-        onTravelEditListener = l;
     }
 
     public interface OnTravelEditListener {

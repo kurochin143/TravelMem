@@ -21,15 +21,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/f_travel_c_0">
 
-            <Button
-                android:id="@+id/f_travel_b_view_on_map"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/view_on_map"
-                android:backgroundTint="@color/commonButtonColor"
-                android:textColor="@color/commonButtonTextColor"
-                android:visibility="gone"/>
-
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -200,29 +191,7 @@
                 android:backgroundTint="@color/deleteButtonColor"
                 android:textColor="@color/commonButtonTextColor"/>
 
-            <Button
-                android:id="@+id/f_travel_b_creating_save"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/save"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:backgroundTint="@color/commonButtonColor"
-                android:textColor="@color/commonButtonTextColor"/>
-
-            <Button
-                android:id="@+id/f_travel_b_creating_cancel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/cancel"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:backgroundTint="@color/commonButtonColor"
-                android:textColor="@color/commonButtonTextColor"/>
-
         </android.support.constraint.ConstraintLayout>
-
-
 
     </android.support.constraint.ConstraintLayout>
 

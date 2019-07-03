@@ -43,6 +43,7 @@ import com.isra.israel.travelmem.adapter.TravelsAdapter;
 import com.isra.israel.travelmem.dao.FirebaseSessionSPDAO;
 import com.isra.israel.travelmem.dao.SettingsSPDAO;
 import com.isra.israel.travelmem.dao.TravelMemLocalCacheDAO;
+import com.isra.israel.travelmem.fragment.AddTravelFragment;
 import com.isra.israel.travelmem.fragment.SettingsFragment;
 import com.isra.israel.travelmem.fragment.TravelFragment;
 import com.isra.israel.travelmem.model.Travel;
@@ -56,7 +57,10 @@ import java.util.TimerTask;
 import javax.inject.Inject;
 
 public class TravelsActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        AddTravelFragment.OnTravelAddListener,
+        TravelFragment.OnTravelDeleteListener,
+        TravelFragment.OnTravelEditListener {
 
     private String uid;
     private String token;
@@ -66,11 +70,11 @@ public class TravelsActivity extends AppCompatActivity
     TravelsVMFactory travelsVMFactory;
 
     private TravelsViewModel travelsViewModel;
-    private int openedTravelPosition;
     private Timer locationNotificationTimer = new Timer();
     private FusedLocationProviderClient fusedLocationProviderClient;
-    public static final String NOTIFICATION_CHANNEL_ID = "id:1";
-    public static final String NOTIFICATION_NAME = "name:1";
+
+    private static final String NOTIFICATION_CHANNEL_ID = "id:1";
+    private static final String NOTIFICATION_NAME = "name:1";
     private int notificationId;
 
     @Override
@@ -109,10 +113,12 @@ public class TravelsActivity extends AppCompatActivity
         travelsAdapter = new TravelsAdapter();
         recyclerView.setAdapter(travelsAdapter);
 
-        ((TravelMemApp)getApplication()).createTravelMemSubComponent().inject(this);
-        travelsViewModel = ViewModelProviders.of(this, travelsVMFactory).get(TravelsViewModel.class);
+        // init vars
         uid = FirebaseSessionSPDAO.getUid(this);
         token = FirebaseSessionSPDAO.getIdToken(this);
+
+        ((TravelMemApp)getApplication()).createTravelMemSubComponent().inject(this);
+        travelsViewModel = ViewModelProviders.of(this, travelsVMFactory).get(TravelsViewModel.class);
 
         // travels observer
         travelsViewModel.getTravelsLiveData().observe(this, new Observer<ArrayList<Travel>>() {
@@ -168,28 +174,8 @@ public class TravelsActivity extends AppCompatActivity
         travelsAdapter.setOnTravelClickListener(new TravelsAdapter.OnTravelClickListener() {
             @Override
             public void onTravelClick(Travel travel, int position) {
-                openedTravelPosition = position;
-
                 // open travel fragment for viewing/editing
-                TravelFragment travelFragment = TravelFragment.newInstance(travel, false);
-
-                // on edit
-                travelFragment.setOnTravelEditListener(new TravelFragment.OnTravelEditListener() {
-                    @Override
-                    public void onTravelEdit(Travel travel) {
-                        travel.setLastUpdatedTime(System.currentTimeMillis());
-                        travelsViewModel.updateTravel(uid, token, travel);
-                    }
-                });
-
-                // on delete
-                travelFragment.setOnTravelDeleteListener(new TravelFragment.OnTravelDeleteListener() {
-                    @Override
-                    public void onTravelDelete(String id) {
-                        travelsViewModel.removeTravel(uid, id, token);
-                    }
-                });
-
+                TravelFragment travelFragment = TravelFragment.newInstance(travel);
                 getSupportFragmentManager().beginTransaction()
                         .setCustomAnimations(android.R.anim.slide_in_left,0, 0, android.R.anim.slide_out_right)
                         .add(R.id.a_travels_fl_fragment_root, travelFragment)
@@ -215,21 +201,10 @@ public class TravelsActivity extends AppCompatActivity
         findViewById(R.id.a_travels_fab_add_travel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // open travel fragment for creation
-                TravelFragment travelFragment = TravelFragment.newInstance(new Travel(), true);
-
-                // on create
-                travelFragment.setOnTravelCreateListener(new TravelFragment.OnTravelCreateListener() {
-                    @Override
-                    public void onTravelCreate(final Travel travel) {
-                        travel.setCreationTime(System.currentTimeMillis());
-                        travelsViewModel.addTravel(uid, token, travel);
-                    }
-                });
-
+                AddTravelFragment addTravelFragment = new AddTravelFragment();
                 getSupportFragmentManager().beginTransaction()
                         .setCustomAnimations(android.R.anim.slide_in_left,0, 0, android.R.anim.slide_out_right)
-                        .add(R.id.a_travels_fl_fragment_root, travelFragment)
+                        .add(R.id.a_travels_fl_fragment_root, addTravelFragment)
                         .addToBackStack(null)
                         .commit();
             }
@@ -356,5 +331,20 @@ public class TravelsActivity extends AppCompatActivity
         }
 
         return true;
+    }
+
+    @Override
+    public void onAddTravel(Travel travel) {
+        travelsViewModel.addTravel(uid, token, travel);
+    }
+
+    @Override
+    public void onTravelDelete(String id) {
+        travelsViewModel.removeTravel(uid, token, id);
+    }
+
+    @Override
+    public void onTravelEdit(Travel travel) {
+        travelsViewModel.updateTravel(uid, token, travel);
     }
 }

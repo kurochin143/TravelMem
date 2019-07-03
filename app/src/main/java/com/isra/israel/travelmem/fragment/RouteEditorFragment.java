@@ -1,6 +1,7 @@
 package com.isra.israel.travelmem.fragment;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -50,6 +51,8 @@ import com.isra.israel.travelmem.static_helpers.BitmapStaticHelper;
 import java.util.ArrayList;
 import java.util.List;
 
+import icepick.Icepick;
+import icepick.State;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -62,8 +65,15 @@ public class RouteEditorFragment extends Fragment {
     public static final int RC_SEARCH_ORIGIN = 1;
     public static final int RC_SEARCH_DESTINATION = 2;
 
-    private ArrayList<Route> routes;
-    private Route route;
+    @State
+    Route route;
+
+    @State
+    Point origin;
+
+    @State
+    Point destination;
+
     private GoogleMap googleMap;
     private ArrayList<Polyline> polylines = new ArrayList<>();
     private Marker originMarker;
@@ -72,8 +82,6 @@ public class RouteEditorFragment extends Fragment {
     private ArrayList<Marker> waypointMarkers = new ArrayList<>();
     private Marker selectedWaypointMarker;
     private ImageButton deleteWaypointButton;
-    private Point origin;
-    private Point destination;
     private Call<GoogleDirectionsResult> getDirectionCall;
     private static final List<Place.Field> fields = new ArrayList<>();
     static {
@@ -124,6 +132,10 @@ public class RouteEditorFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        if (savedInstanceState != null) {
+            Icepick.restoreInstanceState(this, savedInstanceState);
+        }
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
 
@@ -480,8 +492,29 @@ public class RouteEditorFragment extends Fragment {
         selectedWaypointMarker = marker;
     }
 
-    public void setOnRouteEditListener(OnRouteEditListener onRouteEditedListener) {
-        this.onRouteEditListener = onRouteEditedListener;
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        Icepick.saveInstanceState(this, outState);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if (getParentFragment() != null && getParentFragment() instanceof OnRouteEditListener) {
+            onRouteEditListener = (OnRouteEditListener) getParentFragment();
+        } else {
+            throw new RuntimeException();
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+        onRouteEditListener = null;
     }
 
     public interface OnRouteEditListener {
